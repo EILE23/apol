@@ -41,8 +41,11 @@ apol_/
 - TypeScript
 - Tailwind CSS
 
+### DB
+- PostgreSQL
+
 ## 개발 환경
 
-1. Node.js 18+ , Nest.js 14+
+1. Node.js 18+ , Nest.js 14+ , node-pg-mirgrate 이용
 
 
