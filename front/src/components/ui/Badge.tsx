@@ -14,7 +14,7 @@ export default function Badge({
   className = "",
 }: BadgeProps) {
   const variantClasses = {
-    default: "bg-gray-100 text-gray-700",
+    default: "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700",
     blue: "bg-blue-100 text-blue-800",
     purple: "bg-purple-100 text-purple-800",
     green: "bg-green-100 text-green-800",

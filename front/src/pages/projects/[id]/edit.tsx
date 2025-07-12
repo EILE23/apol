@@ -54,6 +54,19 @@ export default function ProjectEditPage() {
     setTags(tags.filter((t) => t !== tag));
   };
 
+  // 이미지 업로드 함수 추가
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("image", file);
+    const res = await fetch("/api/projects/upload", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.url || "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -66,12 +79,17 @@ export default function ProjectEditPage() {
     setError("");
 
     try {
+      let thumbnailUrl = project?.thumbnail || "";
+      if (thumbnail) {
+        const uploadedUrl = await uploadImage(thumbnail);
+        thumbnailUrl = uploadedUrl || "";
+      }
       const projectData: UpdateProjectData = {
         title: title.trim(),
         summary: summary.trim(),
         content: content.trim(),
         tags,
-        thumbnail: thumbnail ? URL.createObjectURL(thumbnail) : undefined,
+        thumbnail: thumbnailUrl,
       };
 
       await projectApi.update(id as string, projectData);
@@ -118,7 +136,7 @@ export default function ProjectEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center items-start">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 py-12 px-4 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
         <h1 className="text-2xl font-bold mb-8 text-gray-900">프로젝트 수정</h1>
 
@@ -134,7 +152,7 @@ export default function ProjectEditPage() {
             <label className="block text-gray-700 font-medium mb-1">제목</label>
             <input
               type="text"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="제목을 입력하세요"
@@ -145,7 +163,7 @@ export default function ProjectEditPage() {
           <div>
             <label className="block text-gray-700 font-medium mb-1">요약</label>
             <textarea
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 min-h-[60px]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[60px]"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               placeholder="간단한 요약을 입력하세요"
@@ -155,7 +173,7 @@ export default function ProjectEditPage() {
           <div>
             <label className="block text-gray-700 font-medium mb-1">본문</label>
             <textarea
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 min-h-[180px]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[180px]"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="본문 내용을 입력하세요"
@@ -168,7 +186,7 @@ export default function ProjectEditPage() {
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 placeholder="태그 입력 후 Enter"
@@ -181,7 +199,7 @@ export default function ProjectEditPage() {
               />
               <button
                 type="button"
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 text-white rounded-md hover:from-gray-600 hover:to-gray-500"
                 onClick={handleAddTag}
               >
                 추가
@@ -191,12 +209,12 @@ export default function ProjectEditPage() {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                  className="inline-flex items-center bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm"
                 >
                   #{tag}
                   <button
                     type="button"
-                    className="ml-2 text-blue-400 hover:text-blue-700"
+                    className="ml-2 text-gray-500 hover:text-gray-700"
                     onClick={() => handleRemoveTag(tag)}
                   >
                     ×
@@ -214,7 +232,7 @@ export default function ProjectEditPage() {
               type="file"
               accept="image/*"
               onChange={(e) => setThumbnail(e.target.files?.[0] || null)}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-gray-100 file:to-gray-200 file:text-gray-700 hover:file:from-gray-200 hover:file:to-gray-300"
             />
             {thumbnail && (
               <div className="mt-2">
@@ -240,7 +258,7 @@ export default function ProjectEditPage() {
           <div className="flex gap-3 justify-end pt-4">
             <button
               type="button"
-              className="px-5 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+              className="px-5 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
               onClick={() => router.back()}
               disabled={isSubmitting}
             >
@@ -248,7 +266,7 @@ export default function ProjectEditPage() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
+              className="px-5 py-2 rounded-md bg-gradient-to-r from-gray-700 to-gray-600 text-white font-semibold hover:from-gray-600 hover:to-gray-500 disabled:from-gray-400 disabled:to-gray-300 disabled:cursor-not-allowed"
               disabled={isSubmitting}
             >
               {isSubmitting ? "수정 중..." : "수정"}

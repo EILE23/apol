@@ -35,19 +35,22 @@ const projects = [
 
 export default function PortfolioProjects() {
   return (
-    <section id="projects" className="py-20 bg-gray-50">
+    <section
+      id="projects"
+      className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            My Projects
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Projects
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            최근에 작업한 프로젝트들을 소개합니다.
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            다양한 기술 스택으로 구현한 작업물들을 소개합니다.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
+          {projects.map((project: any) => (
             <Link
               key={project.id}
               href={`/projects/${project.id}`}
@@ -55,11 +58,8 @@ export default function PortfolioProjects() {
             >
               <Card hover className="h-full group">
                 {/* Project Image */}
-                <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-4xl text-gray-400">📱</div>
-                  </div>
+                <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-600">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-600/20 to-gray-500/20"></div>
                 </div>
 
                 {/* Project Content */}
@@ -67,15 +67,19 @@ export default function PortfolioProjects() {
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {project.title}
                   </h3>
-                  <p className="text-gray-600 mb-4">{project.description}</p>
+                  <p className="text-gray-600 mb-4">
+                    {project.summary || project.description}
+                  </p>
 
                   {/* Technologies */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map((tech) => (
-                      <Badge key={tech} variant="default" size="sm">
-                        {tech}
-                      </Badge>
-                    ))}
+                    {(project.tags || project.technologies).map(
+                      (tech: string) => (
+                        <Badge key={tech} variant="default" size="sm">
+                          {tech}
+                        </Badge>
+                      )
+                    )}
                   </div>
 
                   {/* Links */}
@@ -84,9 +88,7 @@ export default function PortfolioProjects() {
                       variant="primary"
                       size="sm"
                       className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
+                      onClick={() => {
                         window.open(project.link, "_blank");
                       }}
                     >
@@ -96,9 +98,7 @@ export default function PortfolioProjects() {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
+                      onClick={() => {
                         window.open(project.github, "_blank");
                       }}
                     >

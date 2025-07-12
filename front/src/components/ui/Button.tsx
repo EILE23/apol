@@ -24,7 +24,7 @@ export default function Button({
 
   const variantClasses = {
     primary:
-      "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg transform hover:scale-105 focus:ring-blue-500",
+      "bg-gradient-to-r from-gray-700 to-gray-600 text-white hover:shadow-lg transform hover:scale-105 focus:ring-gray-500",
     secondary:
       "bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500",
     outline:

@@ -103,102 +103,81 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col">
       <Header type="projects" />
 
       <main className="pt-20 flex-1">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Error Display */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
+            <div className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-md mb-6">
               {error}
             </div>
           )}
 
-          {/* Project Header */}
-          <div className="mb-8">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {project.title}
-                </h1>
-                <p className="text-gray-600">{project.summary}</p>
+          {/* Project Card */}
+          <div className="bg-black/60 backdrop-blur-md rounded-2xl shadow-xl border border-gray-800 overflow-hidden">
+            {/* 썸네일 */}
+            {project.thumbnail && (
+              <div className="w-full h-72 bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center overflow-hidden">
+                <img
+                  src={project.thumbnail}
+                  alt="썸네일"
+                  className="object-cover w-full h-full"
+                />
               </div>
-              <div className="flex gap-2">
+            )}
+            {/* 정보 */}
+            <div className="p-8">
+              <div className="flex flex-wrap gap-2 mb-4 items-center">
+                <span className="text-sm text-gray-500">
+                  {formatDate(project.createdAt)}
+                </span>
+                <span className="text-sm text-gray-700">|</span>
+                <span className="text-sm text-gray-500">
+                  수정일: {formatDate(project.updatedAt)}
+                </span>
+              </div>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                {project.title}
+              </h1>
+              <p className="text-gray-300 mb-4">{project.summary}</p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {project.tags.map((tag) => (
+                  <Badge key={tag} variant="default" size="sm">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+              <div className="prose max-w-none mb-8">
+                <h3 className="text-lg font-semibold text-white mb-3">설명</h3>
+                <p className="text-gray-200 whitespace-pre-wrap">
+                  {project.content}
+                </p>
+              </div>
+              <div className="flex gap-3 justify-end">
                 <Link
                   href={`/projects/${project.id}/edit`}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  className="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 text-white rounded-md hover:from-gray-600 hover:to-gray-500"
                 >
                   수정
                 </Link>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-white text-gray-900 border border-gray-300 rounded-md hover:bg-gray-100 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isDeleting ? "삭제 중..." : "삭제"}
                 </button>
               </div>
             </div>
-
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <span>작성일: {formatDate(project.createdAt)}</span>
-              <span>수정일: {formatDate(project.updatedAt)}</span>
-            </div>
           </div>
-
-          {/* Project Content */}
-          <Card>
-            <div className="p-8">
-              {/* Tags */}
-              {project.tags.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    사용 기술
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <Badge key={tag} variant="default" size="sm">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Content */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  프로젝트 설명
-                </h3>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 whitespace-pre-wrap">
-                    {project.content}
-                  </p>
-                </div>
-              </div>
-
-              {/* Thumbnail */}
-              {project.thumbnail && (
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    썸네일
-                  </h3>
-                  <img
-                    src={project.thumbnail}
-                    alt="프로젝트 썸네일"
-                    className="max-w-full h-auto rounded-lg border border-gray-200"
-                  />
-                </div>
-              )}
-            </div>
-          </Card>
 
           {/* Back to Projects */}
           <div className="mt-8 text-center">
             <Link
               href="/projects"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800"
+              className="inline-flex items-center text-gray-300 hover:text-white"
             >
               ← 프로젝트 목록으로 돌아가기
             </Link>

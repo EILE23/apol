@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff;
+  --foreground: #111;
+  --primary: #374151;
+  --primary-dark: #1f2937;
+  --secondary: #6b7280;
+  --secondary-dark: #4b5563;
+  --border: #d1d5db;
+  --muted: #6b7280;
+  --gradient-start: #374151;
+  --gradient-end: #1f2937;
 }
 
 @theme inline {
@@ -12,8 +20,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #111;
+    --foreground: #fff;
+    --primary: #6b7280;
+    --primary-dark: #4b5563;
+    --secondary: #374151;
+    --secondary-dark: #1f2937;
+    --border: #374151;
+    --muted: #9ca3af;
+    --gradient-start: #6b7280;
+    --gradient-end: #374151;
   }
 }
 
@@ -25,6 +41,40 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btn-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  color: white;
+  border: none;
+}
+.btn-gradient:hover {
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark),
+    var(--secondary-dark)
+  );
+}
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
 }
 
 /* Smooth scrolling */
