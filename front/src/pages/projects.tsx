@@ -54,7 +54,7 @@ export default function ProjectsPage() {
                 Projects
               </h1>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                다양한 기술 스택으로 구현한 작업물들을 소개합니다.
+                구현한 작업물들을 소개합니다.
               </p>
             </div>
           </div>
@@ -63,6 +63,10 @@ export default function ProjectsPage() {
         {/* 프로젝트 리스트 */}
         <section className="py-8">
           <div className="max-w-5xl mx-auto px-4 flex flex-col gap-12">
+            <div
+              className="
+          "
+            ></div>
             {loading && (
               <div className="text-center py-12 text-gray-500">
                 프로젝트 목록을 불러오는 중...

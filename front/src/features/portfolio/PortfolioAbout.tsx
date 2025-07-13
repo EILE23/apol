@@ -45,7 +45,9 @@ export default function PortfolioAbout() {
           {/* 오른쪽 내용 */}
           <div className="space-y-10">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-4">주 기술</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                자신 있는 기술
+              </h3>
               <ul className="space-y-4 text-gray-300 leading-relaxed text-base">
                 <li>
                   <strong className="text-white">NestJS</strong> – 구조화된
@@ -70,7 +72,7 @@ export default function PortfolioAbout() {
                 <li>
                   <strong className="text-white">JavaScript</strong> – 웹 전반에
                   걸친 개발 경험을 통해 비동기 흐름, 클로저, 스코프 등 JS 특성에
-                  대한 깊은 이해를 가지고 있습니다.
+                  대한 이해를 가지고 있습니다.
                 </li>
                 <li>
                   <strong className="text-white">SQL</strong> – ERD 설계부터
