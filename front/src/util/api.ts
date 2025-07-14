@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export interface Project {
   id: string;
@@ -56,17 +55,17 @@ async function apiRequest<T>(
 export const projectApi = {
   // 모든 프로젝트 조회
   getAll: (): Promise<Project[]> => {
-    return apiRequest<Project[]>("/projects");
+    return apiRequest<Project[]>("/api/projects");
   },
 
   // 특정 프로젝트 조회
   getById: (id: string): Promise<Project> => {
-    return apiRequest<Project>(`/projects/${id}`);
+    return apiRequest<Project>(`/api/projects/${id}`);
   },
 
   // 새 프로젝트 생성
   create: (data: CreateProjectData): Promise<Project> => {
-    return apiRequest<Project>("/projects", {
+    return apiRequest<Project>("/api/projects", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -74,7 +73,7 @@ export const projectApi = {
 
   // 프로젝트 수정
   update: (id: string, data: UpdateProjectData): Promise<Project> => {
-    return apiRequest<Project>(`/projects/${id}`, {
+    return apiRequest<Project>(`/api/projects/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
@@ -82,7 +81,7 @@ export const projectApi = {
 
   // 프로젝트 삭제
   delete: (id: string): Promise<{ message: string }> => {
-    return apiRequest<{ message: string }>(`/projects/${id}`, {
+    return apiRequest<{ message: string }>(`/api/projects/${id}`, {
       method: "DELETE",
     });
   },

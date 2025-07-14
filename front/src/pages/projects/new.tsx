@@ -37,10 +37,12 @@ export default function ProjectCreatePage() {
   };
 
   // 이미지 업로드 함수 추가
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("image", file);
-    const res = await fetch("/api/projects/upload", {
+    const res = await fetch(`${API_BASE_URL}/api/projects/upload`, {
       method: "POST",
       body: formData,
     });
