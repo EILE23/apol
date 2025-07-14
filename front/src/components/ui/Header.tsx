@@ -10,17 +10,8 @@ interface HeaderProps {
 export default function Header({ type }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const getAboutLink = () => {
-    switch (type) {
-      case "home":
-        return "#about";
-      case "projects":
-      case "project-detail":
-        return "/#about";
-      default:
-        return "#about";
-    }
-  };
+  // About 링크는 항상 /about으로 이동
+  const getAboutLink = () => "/about";
 
   const getProjectsLink = () => {
     switch (type) {

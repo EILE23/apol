@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-export const up = (pgm) => {
+const up = (pgm) => {
   // 스키마 생성
   pgm.createSchema("apol_schema");
 
@@ -17,9 +17,11 @@ export const up = (pgm) => {
   });
 };
 
-export const down = (pgm) => {
+const down = (pgm) => {
   // 테이블 삭제
   pgm.dropTable("apol_schema.projects");
   // 스키마 삭제
   pgm.dropSchema("apol_schema");
 };
+
+module.exports = { up, down };

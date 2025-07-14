@@ -14,6 +14,14 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("전체보기");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(
+      typeof window !== "undefined" &&
+        localStorage.getItem("admin_token") === "true"
+    );
+  }, []);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -63,6 +71,16 @@ export default function ProjectsPage() {
         {/* 프로젝트 리스트 */}
         <section className="py-8">
           <div className="max-w-5xl mx-auto px-4 flex flex-col gap-12">
+            {isAdmin && (
+              <div className="flex justify-end mb-4">
+                <Link
+                  href="/projects/new"
+                  className="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 text-white rounded-md hover:from-gray-600 hover:to-gray-500"
+                >
+                  새 프로젝트 작성
+                </Link>
+              </div>
+            )}
             <div
               className="
           "

@@ -1,6 +1,6 @@
 import PortfolioHeader from "../features/portfolio/PortfolioHeader";
 import PortfolioHero from "../features/portfolio/PortfolioHero";
-import PortfolioAbout from "../features/portfolio/PortfolioAbout";
+// import PortfolioAbout from "../features/portfolio/PortfolioAbout";
 import PortfolioEducation from "../features/portfolio/PortfolioEducation";
 import PortfolioProjects from "../features/portfolio/PortfolioProjects";
 // import PortfolioContact from "../features/portfolio/PortfolioContact";
@@ -11,8 +11,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <PortfolioHeader />
       <main className="flex-1">
-        <PortfolioHero />
-        <PortfolioAbout />
+        <PortfolioHero aboutButton />
         {/* <PortfolioEducation /> */}
         <PortfolioProjects />
         {/* <PortfolioContact /> */}

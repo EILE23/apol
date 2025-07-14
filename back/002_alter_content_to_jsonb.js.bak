@@ -1,0 +1,19 @@
+/* eslint-disable camelcase */
+
+const up = (pgm) => {
+  // content 필드를 jsonb로 변경
+  pgm.alterColumn("apol_schema.projects", "content", {
+    type: "jsonb",
+    using: "content::jsonb",
+  });
+};
+
+const down = (pgm) => {
+  // content 필드를 다시 text로 변경
+  pgm.alterColumn("apol_schema.projects", "content", {
+    type: "text",
+    using: "content::text",
+  });
+};
+
+module.exports = { up, down };

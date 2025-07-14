@@ -1,6 +1,7 @@
 import Badge from "../../components/ui/Badge";
-import Button from "../../components/ui/Button";
 import Link from "next/link";
+import MarkdownIt from "markdown-it";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export interface PostDetailData {
   id: string | number;
@@ -15,190 +16,116 @@ export interface PostDetailData {
   duration?: string;
   teamSize?: string;
   role?: string;
-  challenges?: string[];
-  solutions?: string[];
   github?: string;
   liveDemo?: string;
   screenshots?: string[];
+  content?: string; // 마크다운 본문
 }
 
+const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
+
 export default function PostDetail({ post }: { post: PostDetailData }) {
+  // 마크다운 본문 렌더링
+  const htmlContent = post.content ? md.render(post.content) : "";
+
   return (
-    <main className="pt-20 flex-1">
-      {/* Project Header */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <Link
-              href="/posts"
-              className="text-blue-600 hover:text-blue-800 mb-4 inline-block"
-            >
-              ← 게시글 목록으로 돌아가기
-            </Link>
+    <main className="pt-20 px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
+      {/* 제목 */}
+      <header className="mb-10">
+        {post.category && (
+          <div className="mb-2">
+            <Badge variant="blue" size="sm">
+              {post.category}
+            </Badge>
+            {post.status && (
+              <Badge
+                variant={post.status === "완료" ? "green" : "yellow"}
+                size="sm"
+                className="ml-2"
+              >
+                {post.status}
+              </Badge>
+            )}
           </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Project Image */}
-            <div className="relative">
-              <div className="relative w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-6xl text-gray-400">📄</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Project Info */}
-            <div className="space-y-6">
-              {post.category && (
-                <div className="flex items-center gap-4 mb-4">
-                  <Badge variant="blue" size="md">
-                    {post.category}
-                  </Badge>
-                  {post.status && (
-                    <Badge
-                      variant={post.status === "완료" ? "green" : "yellow"}
-                      size="md"
-                    >
-                      {post.status}
-                    </Badge>
-                  )}
-                </div>
-              )}
-
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                {post.title}
-              </h1>
-
-              {post.description && (
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  {post.description}
-                </p>
-              )}
-
-              <div className="grid grid-cols-2 gap-4 py-6">
-                {post.duration && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900">기간</h4>
-                    <p className="text-gray-600">{post.duration}</p>
-                  </div>
-                )}
-                {post.teamSize && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900">팀 크기</h4>
-                    <p className="text-gray-600">{post.teamSize}</p>
-                  </div>
-                )}
-                {post.role && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900">역할</h4>
-                    <p className="text-gray-600">{post.role}</p>
-                  </div>
-                )}
-                {post.date && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900">완료일</h4>
-                    <p className="text-gray-600">{post.date}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-4">
-                {post.github && (
-                  <Button
-                    onClick={() => window.open(post.github, "_blank")}
-                    variant="primary"
-                  >
-                    GitHub 보기
-                  </Button>
-                )}
-                {post.liveDemo && (
-                  <Button
-                    onClick={() => window.open(post.liveDemo, "_blank")}
-                    variant="outline"
-                  >
-                    Live Demo
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
+        )}
+        <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
+        {post.description && (
+          <p className="text-lg text-neutral-400">{post.description}</p>
+        )}
+        {post.date && (
+          <p className="text-sm text-neutral-500 mt-1">{post.date}</p>
+        )}
+      </header>
+      {post.image && (
+        <div className="mb-12">
+          <img
+            src={
+              post.image.startsWith("/uploads/")
+                ? `${API_BASE_URL}${post.image}`
+                : post.image
+            }
+            alt="썸네일 이미지"
+            className="w-full h-auto object-cover rounded-md shadow"
+          />
         </div>
+      )}
+      {/* 마크다운 본문 */}
+      {htmlContent && (
+        <section className="prose prose-invert max-w-none text-base space-y-6 p-6 rounded-xl bg-[#18181b] bg-opacity-90">
+          <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+        </section>
+      )}
+      {/* 프로젝트 기본 정보 */}
+      <section className="mb-12 space-y-2 text-sm leading-relaxed text-neutral-400 mt-12">
+        {post.duration && (
+          <p>
+            <strong className="text-neutral-200">작업 기간:</strong>{" "}
+            {post.duration}
+          </p>
+        )}
+        {post.teamSize && (
+          <p>
+            <strong className="text-neutral-200">팀 규모:</strong>{" "}
+            {post.teamSize}
+          </p>
+        )}
+        {post.role && (
+          <p>
+            <strong className="text-neutral-200">담당 역할:</strong> {post.role}
+          </p>
+        )}
+        {post.technologies && post.technologies.length > 0 && (
+          <p>
+            <strong className="text-neutral-200">사용 기술:</strong>{" "}
+            {post.technologies.join(", ")}
+          </p>
+        )}
       </section>
-
-      {/* Project Details */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Technologies */}
-            {post.technologies && post.technologies.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  사용 기술
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {post.technologies.map((tech) => (
-                    <Badge key={tech} variant="default" size="md">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Project Description */}
-            {post.fullDescription && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  프로젝트 설명
-                </h2>
-                <div className="prose prose-gray max-w-none">
-                  <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                    {post.fullDescription}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Challenges & Solutions */}
-          {(post.challenges || post.solutions) && (
-            <div className="grid lg:grid-cols-2 gap-12 mt-16">
-              {post.challenges && post.challenges.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    도전 과제
-                  </h2>
-                  <div className="space-y-4">
-                    {post.challenges.map((challenge, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-600">{challenge}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {post.solutions && post.solutions.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    해결 방법
-                  </h2>
-                  <div className="space-y-4">
-                    {post.solutions.map((solution, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <p className="text-gray-600">{solution}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+      {/* 링크 버튼 */}
+      {(post.github || post.liveDemo) && (
+        <div className="flex gap-4 mt-6">
+          {post.github && (
+            <a
+              href={post.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:underline font-medium"
+            >
+              🔗 GitHub 보기
+            </a>
+          )}
+          {post.liveDemo && (
+            <a
+              href={post.liveDemo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:underline font-medium"
+            >
+              🌐 Live Demo
+            </a>
           )}
         </div>
-      </section>
+      )}
     </main>
   );
 }

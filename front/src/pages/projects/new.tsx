@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { projectApi, CreateProjectData } from "../../util/api";
 import ProjectForm from "../../components/projects/ProjectForm";
@@ -15,6 +15,15 @@ export default function ProjectCreatePage() {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("admin_token") !== "true"
+    ) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -46,8 +55,9 @@ export default function ProjectCreatePage() {
     summary: string;
     tags: string[];
     thumbnail?: File | null;
+    content: string;
   }) => {
-    if (!data.title.trim() || !content.trim()) {
+    if (!data.title.trim() || !data.content.trim()) {
       setError("제목과 내용은 필수입니다.");
       return;
     }
@@ -62,7 +72,7 @@ export default function ProjectCreatePage() {
       const projectData: CreateProjectData = {
         title: data.title.trim(),
         summary: data.summary.trim(),
-        content: content.trim(),
+        content: data.content,
         tags: data.tags,
         thumbnail: thumbnailUrl,
       };
@@ -81,15 +91,17 @@ export default function ProjectCreatePage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col">
       <Header type="projects" />
       <main className="pt-20 flex-1">
-        <section className="max-w-2xl mx-auto px-4 py-12">
-          <h1 className="text-3xl font-bold text-white mb-8">
+        <section className="max-w-5xl mx-auto px-0 py-0 w-full">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-12 px-8 pt-8">
             새 프로젝트 작성
           </h1>
-          <ProjectForm
-            onSubmit={handleFormSubmit}
-            loading={isSubmitting}
-            error={error}
-          />
+          <div className="w-full px-8 pb-16">
+            <ProjectForm
+              onSubmit={handleFormSubmit}
+              loading={isSubmitting}
+              error={error}
+            />
+          </div>
         </section>
       </main>
       <Footer />

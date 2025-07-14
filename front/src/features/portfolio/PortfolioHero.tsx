@@ -1,4 +1,5 @@
 import Button from "../../components/ui/Button";
+import Link from "next/link";
 
 export default function PortfolioHero() {
   return (
@@ -16,9 +17,11 @@ export default function PortfolioHero() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" className="flex-1 sm:flex-none">
-            프로젝트 보기
-          </Button>
+          <Link href="/about">
+            <Button size="lg" className="flex-1 sm:flex-none">
+              About Me
+            </Button>
+          </Link>
         </div>
       </div>
 

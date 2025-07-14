@@ -21,7 +21,7 @@ async function createSchema() {
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `);
-    console.log("✅ 테이블 생성 완료: apol_schema.projects");
+    console.log(" 테이블 생성 완료: apol_schema.projects");
 
     // 3. 샘플 데이터 삽입 (선택사항)
     const sampleData = [
@@ -53,11 +53,11 @@ async function createSchema() {
         [data.title, data.summary, data.content, data.tags, data.thumbnail]
       );
     }
-    console.log("✅ 샘플 데이터 삽입 완료");
+    console.log(" 샘플 데이터 삽입 완료");
 
-    console.log("🎉 모든 스키마 및 테이블 생성이 완료되었습니다!");
+    console.log(" 모든 스키마 및 테이블 생성이 완료되었습니다!");
   } catch (error) {
-    console.error("❌ 스키마 생성 실패:", error);
+    console.error(" 스키마 생성 실패:", error);
   } finally {
     await pool.end();
   }
