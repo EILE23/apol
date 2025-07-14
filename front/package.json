@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@blocknote/react": "^0.6.2",
+    "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/react-editor": "^3.2.3",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

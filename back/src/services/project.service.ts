@@ -15,6 +15,7 @@ export class ProjectService {
     content: string;
     tags: string[];
     thumbnail?: string;
+    duration?: string;
   }): Promise<Project> {
     return await ProjectModel.create(projectData);
   }
@@ -27,6 +28,7 @@ export class ProjectService {
       content?: string;
       tags?: string[];
       thumbnail?: string;
+      duration?: string;
     }
   ): Promise<Project | null> {
     return await ProjectModel.update(id, projectData);

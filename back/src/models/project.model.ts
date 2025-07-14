@@ -7,6 +7,7 @@ export interface Project {
   content: string;
   tags: string[];
   thumbnail?: string;
+  duration?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -28,14 +29,14 @@ export class ProjectModel {
   }
 
   static async create(
-    projectData: Omit<Project, "id" | "created_at" | "updated_at">
+    projectData: Omit<Project, "id" | "created_at" | "updated_at"> // duration 포함
   ): Promise<Project> {
-    const { title, summary, content, tags, thumbnail } = projectData;
+    const { title, summary, content, tags, thumbnail, duration } = projectData;
     const { rows } = await pool.query(
-      `INSERT INTO "apol_schema.projects" (title, summary, content, tags, thumbnail)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO "apol_schema.projects" (title, summary, content, tags, thumbnail, duration)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [title, summary, content, tags, thumbnail]
+      [title, summary, content, tags, thumbnail, duration]
     );
     return rows[0];
   }
