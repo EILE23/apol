@@ -12,7 +12,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://apol.site", "https://www.apol.site"],
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "100mb" }));
 
 app.use("/api/main", mainRouter);
@@ -40,12 +45,12 @@ app.listen(PORT, () => {
   console.log(` 서버 실행 중: http://localhost:${PORT}`);
 
   // apol_schema.projects 테이블 직접 select 테스트
-  (async () => {
-    try {
-      const res = await pool.query('SELECT * FROM "apol_schema.projects"');
-      console.log("직접 select 결과:", res.rows);
-    } catch (err) {
-      console.error("직접 select 에러:", err);
-    }
-  })();
+  // (async () => {
+  //   try {
+  //     const res = await pool.query('SELECT * FROM "apol_schema.projects"');
+  //     console.log("직접 select 결과:", res.rows);
+  //   } catch (err) {
+  //     console.error("직접 select 에러:", err);
+  //   }
+  // })();
 });
