@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
-const Editor = dynamic(
-  () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
-  { ssr: false }
-);
-import "@toast-ui/editor/dist/toastui-editor.css";
-import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+import { useRouter } from "next/router";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => <p className="text-gray-400">에디터 로딩 중...</p>,
+});
+
+import "react-quill/dist/quill.snow.css";
+
+// quill-image-resize-module 적용
+import { Quill } from "react-quill";
+// 타입 선언이 없으므로 직접 선언
+// @ts-ignore
+import ImageResize from "quill-image-resize-module";
+Quill.register("modules/imageResize", ImageResize);
 
 export interface ProjectFormProps {
   initial?: {
@@ -31,6 +39,13 @@ export interface ProjectFormProps {
   disabled?: boolean;
 }
 
+// 본문에 텍스트 또는 이미지가 하나라도 있으면 true (공백/줄바꿈/탭 등 제외)
+function isContentValid(content: string) {
+  const hasText = content.replace(/[\s\n\r\t]/g, "") !== "";
+  const hasHtmlImage = /<img[^>]*src=['\"][^'\"]+['\"][^>]*>/.test(content);
+  return hasText || hasHtmlImage;
+}
+
 export default function ProjectForm({
   initial,
   onSubmit,
@@ -46,7 +61,8 @@ export default function ProjectForm({
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [content, setContent] = useState(initial?.content || "");
   const [duration, setDuration] = useState(initial?.duration || "");
-  const editorRef = useRef<any>(null);
+  const [formError, setFormError] = useState<string>("");
+  const router = useRouter();
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -59,40 +75,57 @@ export default function ProjectForm({
     setTags(tags.filter((t) => t !== tag));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({
-      title,
-      summary,
-      tags,
-      thumbnail,
-      content,
-      duration,
-    });
+  // 등록 버튼 클릭 핸들러
+  const handleRegister = async () => {
+    setFormError("");
+
+    if (!title.trim() || !isContentValid(content)) {
+      setFormError("제목과 내용은 필수입니다.");
+      return;
+    }
+    try {
+      await onSubmit({
+        title,
+        summary,
+        tags,
+        thumbnail,
+        content,
+        duration,
+      });
+    } catch (e) {
+      setFormError("등록 중 오류가 발생했습니다.");
+    }
   };
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+  // Quill 에디터 설정
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"],
+    ],
+    imageResize: {},
+  };
+
+  const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+    "image",
+  ];
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        const editorIns = editorRef.current;
-        const markdown = editorIns
-          ? editorIns.getInstance().getMarkdown()
-          : content;
-        onSubmit({
-          title,
-          summary,
-          tags,
-          thumbnail,
-          content: markdown,
-          duration,
-        });
-      }}
-      className="space-y-8 text-white max-w-2xl mx-auto px-4 py-8"
-    >
+    <div className="space-y-8 text-white max-w-2xl mx-auto px-4 py-8">
       {/* 제목 */}
       <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
@@ -107,46 +140,38 @@ export default function ProjectForm({
         />
       </div>
 
-      {/* 본문(markdown textarea → Toast UI Editor) */}
+      {/* 소개글 입력 */}
+      <div className="mb-6">
+        <label className="block text-lg text-gray-200 font-semibold mb-2">
+          소개글 (카드/상세에 표시될 간단 요약)
+        </label>
+        <input
+          type="text"
+          value={summary}
+          onChange={(e) => setSummary(e.target.value)}
+          className="w-full px-4 py-2 bg-[#18181b] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/60 rounded-md text-base"
+          placeholder="이 프로젝트를 한 줄로 소개해 주세요."
+        />
+      </div>
+
+      {/* 본문(react-quill) */}
       <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
-          본문 (Markdown 지원)
+          본문 (HTML 지원)
         </label>
-        <Editor
-          ref={editorRef}
-          initialValue={content}
-          previewStyle="vertical"
-          height="400px"
-          theme="dark"
-          usageStatistics={false}
-          hideModeSwitch={true}
-          toolbarItems={[
-            ["heading", "bold", "italic", "strike"],
-            ["hr", "quote"],
-            ["ul", "ol", "task", "indent", "outdent"],
-            ["table", "image", "link", "code", "codeblock"],
-          ]}
-          hooks={{
-            addImageBlobHook: async (blob: any, callback: any) => {
-              // 이미지 업로드 API 호출
-              const formData = new FormData();
-              formData.append("image", blob);
-              const API_BASE_URL =
-                process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-              const res = await fetch(`${API_BASE_URL}/api/projects/upload`, {
-                method: "POST",
-                body: formData,
-              });
-              const data = await res.json();
-              if (data.url) {
-                callback(`${API_BASE_URL}${data.url}`, blob.name);
-              } else {
-                alert("이미지 업로드 실패");
-              }
-              return false;
-            },
-          }}
-        />
+        <div className="bg-[#18181b] border border-gray-700 rounded-md">
+          <ReactQuill
+            value={content}
+            onChange={setContent}
+            modules={quillModules}
+            formats={quillFormats}
+            placeholder="프로젝트 내용을 작성해 주세요..."
+            className="text-white"
+            style={{
+              height: "400px",
+            }}
+          />
+        </div>
       </div>
 
       {/* 작업기간 입력 */}
@@ -231,30 +256,29 @@ export default function ProjectForm({
             />
           </div>
         )}
-        {thumbnail && typeof thumbnail !== "string" && (
-          <div className="mt-2">
-            <img
-              src={URL.createObjectURL(thumbnail)}
-              alt="썸네일 미리보기"
-              className="h-32 rounded-md border border-gray-700 object-cover"
-            />
-          </div>
-        )}
       </div>
 
-      {/* 에러 */}
-      {error && <div className="text-red-500">{error}</div>}
+      {/* 에러 메시지 */}
+      {formError && (
+        <div className="text-red-400 text-sm font-semibold mt-2">
+          {formError}
+        </div>
+      )}
+      {error && (
+        <div className="text-red-400 text-sm font-semibold mt-2">{error}</div>
+      )}
 
-      {/* 제출 버튼 */}
-      <button
-        type="submit"
-        className={`w-full py-3 bg-gradient-to-r from-[#1e293b] to-[#334155] hover:from-[#2c3a50] hover:to-[#445566] text-white font-bold rounded-md ${
-          loading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-        disabled={loading}
-      >
-        {isEdit ? "수정하기" : "등록하기"}
-      </button>
-    </form>
+      {/* 등록 버튼 */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={handleRegister}
+          className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold rounded-md hover:from-blue-700 hover:to-blue-500 disabled:opacity-60"
+          disabled={loading || disabled}
+        >
+          {isEdit ? "수정하기" : "등록하기"}
+        </button>
+      </div>
+    </div>
   );
 }

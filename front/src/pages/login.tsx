@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { loginAsAdmin } from "../util/auth";
 
 export default function LoginPage() {
   const [id, setId] = useState("");
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (id === "asd123" && pw === "asd123") {
-      localStorage.setItem("admin_token", "true");
+      loginAsAdmin();
       router.push("/");
     } else {
       setError("ID 또는 비밀번호가 올바르지 않습니다.");

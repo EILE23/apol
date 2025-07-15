@@ -6,6 +6,7 @@ import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
 import { projectApi, Project } from "../util/api";
 import ProjectCard from "../components/projects/ProjectCard";
+import { isAdminLoggedIn } from "../util/auth";
 
 const categories = ["전체보기", "Next.js", "React.js", "TypeScript", "Design"];
 
@@ -17,10 +18,11 @@ export default function ProjectsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(
-      typeof window !== "undefined" &&
-        localStorage.getItem("admin_token") === "true"
-    );
+    setIsAdmin(isAdminLoggedIn());
+    const interval = setInterval(() => {
+      setIsAdmin(isAdminLoggedIn());
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function ProjectsPage() {
       <Header type="projects" />
       <main className="pt-20 flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-gray-900 via-black to-gray-800 py-16">
+        <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -70,7 +72,7 @@ export default function ProjectsPage() {
 
         {/* 프로젝트 리스트 */}
         <section className="py-8">
-          <div className="max-w-5xl mx-auto px-4 flex flex-col gap-12">
+          <div className="max-w-5xl mx-auto px-4 flex flex-col gap-6">
             {isAdmin && (
               <div className="flex justify-end mb-4">
                 <Link
@@ -81,10 +83,7 @@ export default function ProjectsPage() {
                 </Link>
               </div>
             )}
-            <div
-              className="
-          "
-            ></div>
+            <div className=""></div>
             {loading && (
               <div className="text-center py-12 text-gray-500">
                 프로젝트 목록을 불러오는 중...
@@ -95,8 +94,13 @@ export default function ProjectsPage() {
             )}
             {!loading &&
               !error &&
-              projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+              projects.map((project, idx) => (
+                <>
+                  <ProjectCard key={project.id} project={project} type="list" />
+                  {idx !== projects.length - 1 && (
+                    <div className="w-full h-px bg-[#23232a] my-8" />
+                  )}
+                </>
               ))}
           </div>
         </section>

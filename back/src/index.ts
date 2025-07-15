@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import mainRouter from "./routes/main.route";
 import projectRouter from "./routes/project.route";
 import path from "path";
+import { Request, Response, NextFunction } from "express";
+import { pool } from "./util/db";
 
 dotenv.config();
 
@@ -22,6 +24,28 @@ app.get("/", (req, res) => {
   res.send(" 백엔드 서버 작동 중");
 });
 
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({ error: err.message || "Internal Server Error" });
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection:", reason);
+});
+
 app.listen(PORT, () => {
   console.log(` 서버 실행 중: http://localhost:${PORT}`);
+
+  // apol_schema.projects 테이블 직접 select 테스트
+  (async () => {
+    try {
+      const res = await pool.query('SELECT * FROM "apol_schema.projects"');
+      console.log("직접 select 결과:", res.rows);
+    } catch (err) {
+      console.error("직접 select 에러:", err);
+    }
+  })();
 });

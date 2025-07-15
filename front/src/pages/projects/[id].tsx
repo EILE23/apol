@@ -9,6 +9,7 @@ import { projectApi, Project } from "../../util/api";
 import PostDetail, {
   PostDetailData,
 } from "../../features/portfolio/PostDetail";
+import { isAdminLoggedIn } from "../../util/auth";
 
 export default function ProjectDetailPage() {
   const router = useRouter();
@@ -26,10 +27,7 @@ export default function ProjectDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    setIsAdmin(
-      typeof window !== "undefined" &&
-        localStorage.getItem("admin_token") === "true"
-    );
+    setIsAdmin(isAdminLoggedIn());
   }, []);
 
   const fetchProject = async () => {
@@ -138,16 +136,7 @@ export default function ProjectDetailPage() {
                 {isDeleting ? "삭제 중..." : "삭제"}
               </button>
             </div>
-          ) : (
-            <div className="flex justify-end mt-8">
-              <Link
-                href="/login"
-                className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600"
-              >
-                관리자 로그인
-              </Link>
-            </div>
-          )}
+          ) : null}
           <div className="mt-8 text-center">
             <Link
               href="/projects"

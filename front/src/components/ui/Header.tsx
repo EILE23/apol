@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isAdminLoggedIn, logoutAdmin } from "../../util/auth";
+import { useRouter } from "next/router";
 
 type HeaderType = "home" | "projects" | "project-detail";
 
@@ -9,6 +11,17 @@ interface HeaderProps {
 
 export default function Header({ type }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsAdmin(isAdminLoggedIn());
+    // 토큰 만료 등으로 상태 변동 감지용
+    const interval = setInterval(() => {
+      setIsAdmin(isAdminLoggedIn());
+    }, 1000 * 10); // 10초마다 체크
+    return () => clearInterval(interval);
+  }, []);
 
   // About 링크는 항상 /about으로 이동
   const getAboutLink = () => "/about";
@@ -48,6 +61,18 @@ export default function Header({ type }: HeaderProps) {
             >
               Projects
             </Link>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  logoutAdmin();
+                  setIsAdmin(false);
+                  router.push("/");
+                }}
+                className="ml-4 px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                로그아웃
+              </button>
+            )}
           </nav>
 
           {/* Mobile menu button */}

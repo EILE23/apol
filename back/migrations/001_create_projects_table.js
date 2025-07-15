@@ -12,6 +12,7 @@ const up = (pgm) => {
     content: { type: "text" },
     tags: { type: "text[]" },
     thumbnail: { type: "varchar(255)" },
+    duration: { type: "text" },
     created_at: { type: "timestamp", default: pgm.func("now()") },
     updated_at: { type: "timestamp", default: pgm.func("now()") },
   });

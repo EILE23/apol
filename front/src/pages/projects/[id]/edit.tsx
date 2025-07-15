@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { projectApi, Project, UpdateProjectData } from "../../../util/api";
 import ProjectForm from "../../../components/projects/ProjectForm";
+import { isAdminLoggedIn } from "../../../util/auth";
 
 export default function ProjectEditPage() {
   const router = useRouter();
@@ -11,14 +12,6 @@ export default function ProjectEditPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form states
-  const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
-
   useEffect(() => {
     if (id && typeof id === "string") {
       fetchProject();
@@ -26,10 +19,7 @@ export default function ProjectEditPage() {
   }, [id]);
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("admin_token") !== "true"
-    ) {
+    if (typeof window !== "undefined" && !isAdminLoggedIn()) {
       window.location.href = "/login";
     }
   }, []);
@@ -38,10 +28,6 @@ export default function ProjectEditPage() {
     try {
       const data = await projectApi.getById(id as string);
       setProject(data);
-      setTitle(data.title);
-      setSummary(data.summary);
-      setContent(data.content);
-      setTags(data.tags);
     } catch (err) {
       setError(
         err instanceof Error
@@ -53,18 +39,7 @@ export default function ProjectEditPage() {
     }
   };
 
-  const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
-  };
-
-  // 이미지 업로드 함수 추가
+  // 이미지 업로드 함수
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   const uploadImage = async (file: File): Promise<string> => {
@@ -77,42 +52,6 @@ export default function ProjectEditPage() {
     if (!res.ok) return "";
     const data = await res.json();
     return data.url || "";
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!title.trim() || !content.trim()) {
-      setError("제목과 내용은 필수입니다.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError("");
-
-    try {
-      let thumbnailUrl = project?.thumbnail || "";
-      if (thumbnail) {
-        const uploadedUrl = await uploadImage(thumbnail);
-        thumbnailUrl = uploadedUrl || "";
-      }
-      const projectData: UpdateProjectData = {
-        title: title.trim(),
-        summary: summary.trim(),
-        content: content.trim(),
-        tags,
-        thumbnail: thumbnailUrl,
-      };
-
-      await projectApi.update(id as string, projectData);
-      router.push(`/projects/${id}`);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "프로젝트 수정에 실패했습니다."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   if (loading) {

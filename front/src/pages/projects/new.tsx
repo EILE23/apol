@@ -4,39 +4,20 @@ import { projectApi, CreateProjectData } from "../../util/api";
 import ProjectForm from "../../components/projects/ProjectForm";
 import Header from "../../components/ui/Header";
 import Footer from "../../components/ui/Footer";
+import { isAdminLoggedIn } from "../../util/auth";
 
 export default function ProjectCreatePage() {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("admin_token") !== "true"
-    ) {
+    if (typeof window !== "undefined" && !isAdminLoggedIn()) {
       window.location.href = "/login";
     }
   }, []);
 
-  const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
-  };
-
-  // 이미지 업로드 함수 추가
+  // 이미지 업로드 함수
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   const uploadImage = async (file: File): Promise<string> => {
@@ -59,10 +40,6 @@ export default function ProjectCreatePage() {
     thumbnail?: File | null;
     content: string;
   }) => {
-    if (!data.title.trim() || !data.content.trim()) {
-      setError("제목과 내용은 필수입니다.");
-      return;
-    }
     setIsSubmitting(true);
     setError("");
     try {

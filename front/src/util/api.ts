@@ -7,6 +7,7 @@ export interface Project {
   content: string;
   tags: string[];
   thumbnail?: string;
+  duration?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,6 +18,7 @@ export interface CreateProjectData {
   content: string;
   tags: string[];
   thumbnail?: string;
+  duration?: string;
 }
 
 export interface UpdateProjectData {
@@ -25,6 +27,7 @@ export interface UpdateProjectData {
   content?: string;
   tags?: string[];
   thumbnail?: string;
+  duration?: string;
 }
 
 // API 요청 헬퍼 함수

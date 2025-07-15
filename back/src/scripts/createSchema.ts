@@ -17,6 +17,7 @@ async function createSchema() {
         content TEXT,
         tags TEXT[],
         thumbnail VARCHAR(255),
+        duration TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );

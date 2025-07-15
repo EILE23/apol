@@ -25,7 +25,7 @@ export default function AboutContent() {
       {/* About Me 섹션 */}
       <section
         id="about"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8"
       >
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -112,34 +112,37 @@ export default function AboutContent() {
         </div>
       </section>
 
-      {/* 자기소개서(본문) 섹션 */}
-      <section className="prose prose-invert max-w-none text-base space-y-6 p-0 bg-transparent">
-        <header className="mb-10">
-          <h1 className="text-4xl font-bold text-white mb-4">자기소개서</h1>
-          <p className="text-lg text-neutral-400">
-            저를 소개합니다. (텍스트는 직접 입력하시면 됩니다.)
-          </p>
-        </header>
-        <section>
-          <p>
-            안녕하세요. 저는 꾸준히 성장하는 백엔드 개발자를 꿈꾸는 사람입니다.
-            <br />
-            다양한 경험을 해왔고, 현재는 웹 개발에 매진하고 있습니다.
-          </p>
-          <p>
-            저는 조용하고 깊이 파고드는 성향이 있습니다. 새로운 기술을 탐구하고,
-            원리를 이해하며 구조를 설계하는 과정을 좋아합니다.
-          </p>
-          <p>
-            혼자서 집중하는 시간을 즐기며, 주어진 일에 책임감 있게 임하는
-            스타일입니다. 실무 경험은 부족하지만, 사이드 프로젝트와 개인
-            학습으로 역량을 키워왔습니다.
-          </p>
-          <p>
-            앞으로는 좋은 팀과 함께 성장하며, 더 나은 코드를 만들고 서비스에
-            기여하고 싶습니다.
-          </p>
-        </section>
+      {/* 자기소개서(본문) 섹션 - 스타일 통일 */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-transparent rounded-2xl p-0">
+          <h2 className="text-3xl font-bold text-white mb-4 pt-246">
+            저를 소개합니다.
+          </h2>
+          <div className="space-y-4 text-gray-300 text-base leading-relaxed pb-24">
+            <p>
+              안녕하세요. 저는 꾸준히 성장하는 백엔드 개발자를 꿈꾸는
+              안상현이라고 합니다.
+              <br />
+              개발과 동 떨어진 다양한 경험을 해왔지만, 현재는 개발에 매진하고
+              있습니다.
+            </p>
+            <p>
+              저는 조용하고 깊이 파고드는 성향이 있습니다. 새로운 기술을
+              탐구하고, 원리를 이해하며 구조를 설계하는 과정을 좋아합니다.
+            </p>
+            <p>
+              혼자서 집중하는 시간을 즐기며, 주어진 일에 책임감 있게 임하는
+              스타일입니다. 실무 경험은 부족하지만, 사이드 프로젝트와 개인
+              학습으로 역량을 키워왔고 <br />
+              현재는.. 스스로 다른 것들을 보거나 어떠한 기능들을 구현할 때
+              로직부터 생각해버리는 뇌 구조가 되어있습니다.
+            </p>
+            <p>
+              앞으로는 좋은 팀과 함께 성장하며, 더 나은 코드를 만들고 서비스에
+              기여하고 싶습니다.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
   );
