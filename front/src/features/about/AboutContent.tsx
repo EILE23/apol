@@ -116,16 +116,16 @@ export default function AboutContent() {
       {/* 자기소개서(본문) 섹션 - 스타일 통일 */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-transparent rounded-2xl p-0">
-          <h2 className="text-3xl font-bold text-white mb-4 pt-24">
-            안녕하세요. 저는 꾸준히 성장하는 백엔드 개발자를 꿈꾸는 안상현이라고
-            합니다.
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 pt-24">
+            안녕하세요.
+            <br />
+            저는 꾸준히 성장하는 백엔드 개발자를 꿈꾸는 안상현이라고 합니다.
           </h2>
-          <div className="space-y-4 text-gray-300 text-base leading-relaxed pb-24">
-            <p>
-              <br />
-              경력상 개발과 동 떨어진 다양한 경험을 해왔지만, 현재는 개발에
-              매진하고 있습니다.
-            </p>
+          <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
+            경력상 개발과 동 떨어진 다양한 경험을 해왔지만, 현재는 개발에
+            매진하고 있습니다.
+          </div>
+          <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
             <p>
               저는 조용하고 깊이 파고드는 성향이 있습니다. 새로운 기술을
               탐구하고, 원리를 이해하며 구조를 설계하는 과정을 좋아합니다.
