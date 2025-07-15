@@ -2,10 +2,10 @@
 
 const up = (pgm) => {
   // 스키마 생성
-  // pgm.createSchema("apol_schema");
+  pgm.createSchema("apol_schema", { ifNotExists: true });
 
   // 프로젝트 테이블 생성
-  pgm.createTable("apol_schema.projects", {
+  pgm.createTable(["apol_schema", "projects"], {
     id: { type: "serial", primaryKey: true },
     title: { type: "varchar(255)", notNull: true },
     summary: { type: "text" },
@@ -20,7 +20,7 @@ const up = (pgm) => {
 
 const down = (pgm) => {
   // 테이블 삭제
-  pgm.dropTable("apol_schema.projects");
+  pgm.dropTable(["apol_schema", "projects"]);
   // 스키마 삭제
   pgm.dropSchema("apol_schema");
 };
