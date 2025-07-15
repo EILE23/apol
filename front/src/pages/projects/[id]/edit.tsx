@@ -5,12 +5,11 @@ import { isAdminLoggedIn } from "../../../util/auth";
 import dynamic from "next/dynamic";
 
 const ProjectForm = dynamic(
-  () => import("../../../components/projects/ProjectForm"),
+  () => import("../../components/projects/ProjectForm"),
   {
     ssr: false,
   }
 );
-
 export default function ProjectEditPage() {
   const router = useRouter();
   const { id } = router.query;

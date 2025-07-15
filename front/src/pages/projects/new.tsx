@@ -7,12 +7,11 @@ import Footer from "../../components/ui/Footer";
 import { isAdminLoggedIn } from "../../util/auth";
 
 const ProjectForm = dynamic(
-  () => import("../../../components/projects/ProjectForm"),
+  () => import("../../components/projects/ProjectForm"),
   {
     ssr: false,
   }
 );
-
 export default function ProjectCreatePage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
