@@ -14,13 +14,15 @@ export interface Project {
 
 export class ProjectModel {
   static async getAll(): Promise<Project[]> {
-    const start = Date.now(); // ✅ 시작 시간 찍기
+    const start = Date.now();
 
     const { rows } = await pool.query(
-      'SELECT * FROM "apol_schema"."projects" ORDER BY id DESC'
+      `SELECT id, title, summary, tags, thumbnail, duration, created_at
+        FROM "apol_schema"."projects"
+        ORDER BY id DESC`
     );
 
-    console.log("쿼리 소요 시간:", Date.now() - start, "ms"); // ✅ 경과 시간 출력
+    console.log("쿼리 소요 시간:", Date.now() - start, "ms");
     return rows;
   }
 

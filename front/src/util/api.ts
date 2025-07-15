@@ -4,7 +4,7 @@ export interface Project {
   id: string;
   title: string;
   summary: string;
-  content: string;
+  content?: string;
   tags: string[];
   thumbnail?: string;
   duration?: string;
