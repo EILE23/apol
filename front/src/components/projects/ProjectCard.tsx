@@ -86,7 +86,7 @@ export default function ProjectCard({
   // 목록/상세 스타일(넓고 정보 많은 카드)
   return (
     <Link href={`/projects/${project.id}`} className="block group">
-      <div className="w-full flex flex-row shadow-[0_2px_16px_0_rgba(0,0,0,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_4px_32px_0_rgba(0,0,0,0.13)] cursor-pointer bg-transparent">
+      <div className="w-full flex flex-col md:flex-row items-center md:items-stretch justify-center md:justify-start shadow-[0_2px_16px_0_rgba(0,0,0,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_4px_32px_0_rgba(0,0,0,0.13)] cursor-pointer bg-transparent">
         {/* 이미지 */}
         <div className="w-60 min-w-[240px] max-w-[260px] aspect-[4/3] flex items-center justify-center overflow-hidden bg-gray-800">
           {project.thumbnail ? (
@@ -107,7 +107,7 @@ export default function ProjectCard({
           )}
         </div>
         {/* 내용 */}
-        <div className="flex flex-col gap-2 px-10 py-7 flex-1 min-w-0 bg-transparent">
+        <div className="flex flex-col gap-2 px-10 py-7 flex-1 min-w-0 bg-transparent items-center md:items-start text-center md:text-left">
           {/* 태그 */}
           <div className="flex flex-wrap gap-2 mb-1">
             {project.tags.map((tag) => (
