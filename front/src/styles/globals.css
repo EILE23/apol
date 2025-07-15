@@ -122,3 +122,9 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Toast UI Editor 내부 글자색만 흰색으로 (최상위 포함, 우선순위 최상) */
+div.toastui-editor-defaultUI .toastui-editor-contents,
+div.toastui-editor-defaultUI .toastui-editor-md-preview {
+  color: #fff !important;
+}

@@ -71,7 +71,7 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
       )}
       {/* 마크다운 본문 */}
       {htmlContent && (
-        <section className="prose prose-invert max-w-none text-base space-y-6 p-6 rounded-xl bg-[#18181b] bg-opacity-90">
+        <section className="prose prose-invert max-w-none text-base space-y-6 p-6 rounded-xl">
           <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
         </section>
       )}
