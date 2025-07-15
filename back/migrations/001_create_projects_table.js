@@ -2,7 +2,7 @@
 
 const up = (pgm) => {
   // 스키마 생성
-  pgm.createSchema("apol_schema");
+  // pgm.createSchema("apol_schema");
 
   // 프로젝트 테이블 생성
   pgm.createTable("apol_schema.projects", {
