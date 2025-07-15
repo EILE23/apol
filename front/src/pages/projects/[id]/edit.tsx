@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { projectApi, Project, UpdateProjectData } from "../../../util/api";
-import ProjectForm from "../../../components/projects/ProjectForm";
 import { isAdminLoggedIn } from "../../../util/auth";
+import dynamic from "next/dynamic";
 
+const ProjectForm = dynamic(
+  () => import("../../../components/projects/ProjectForm"),
+  {
+    ssr: false,
+  }
+);
 export default function ProjectEditPage() {
   const router = useRouter();
   const { id } = router.query;

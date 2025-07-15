@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { projectApi, CreateProjectData } from "../../util/api";
-import ProjectForm from "../../components/projects/ProjectForm";
+import dynamic from "next/dynamic";
 import Header from "../../components/ui/Header";
 import Footer from "../../components/ui/Footer";
 import { isAdminLoggedIn } from "../../util/auth";
 
+const ProjectForm = dynamic(
+  () => import("../../components/projects/ProjectForm"),
+  {
+    ssr: false,
+  }
+);
 export default function ProjectCreatePage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
