@@ -5,7 +5,7 @@ import { isAdminLoggedIn } from "../../../util/auth";
 import dynamic from "next/dynamic";
 
 const ProjectForm = dynamic(
-  () => import("../../components/projects/ProjectForm"),
+  () => import("../../../components/projects/ProjectForm"),
   {
     ssr: false,
   }
