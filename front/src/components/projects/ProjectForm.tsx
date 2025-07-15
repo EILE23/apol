@@ -1,20 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => <p className="text-gray-400">에디터 로딩 중...</p>,
-});
-
-import "react-quill/dist/quill.snow.css";
-
-// quill-image-resize-module 적용
-import { Quill } from "react-quill";
-// 타입 선언이 없으므로 직접 선언
-// @ts-ignore
-import ImageResize from "quill-image-resize-module";
-Quill.register("modules/imageResize", ImageResize);
+import { EditorState } from "prosemirror-state";
+import { EditorView } from "prosemirror-view";
+import { Schema, DOMParser as ProseMirrorDOMParser } from "prosemirror-model";
+import { schema as basicSchema } from "prosemirror-schema-basic";
+import { history } from "prosemirror-history";
+import { keymap } from "prosemirror-keymap";
+import "prosemirror-view/style/prosemirror.css";
+import dynamic from "next/dynamic";
+import "@toast-ui/editor/dist/toastui-editor.css";
 
 export interface ProjectFormProps {
   initial?: {
@@ -22,7 +16,7 @@ export interface ProjectFormProps {
     summary?: string;
     tags?: string[];
     thumbnail?: string;
-    content?: string; // markdown 본문
+    content?: string; // HTML 본문
     duration?: string; // 작업기간
   };
   onSubmit: (data: {
@@ -30,7 +24,7 @@ export interface ProjectFormProps {
     summary: string;
     tags: string[];
     thumbnail?: File | null;
-    content: string; // markdown 본문
+    content: string; // HTML 본문
     duration?: string; // 작업기간
   }) => void;
   isEdit?: boolean;
@@ -39,11 +33,9 @@ export interface ProjectFormProps {
   disabled?: boolean;
 }
 
-// 본문에 텍스트 또는 이미지가 하나라도 있으면 true (공백/줄바꿈/탭 등 제외)
 function isContentValid(content: string) {
-  const hasText = content.replace(/[\s\n\r\t]/g, "") !== "";
-  const hasHtmlImage = /<img[^>]*src=['\"][^'\"]+['\"][^>]*>/.test(content);
-  return hasText || hasHtmlImage;
+  // HTML 태그 제거 후 텍스트가 남아있으면 true
+  return content.replace(/<[^>]*>/g, "").replace(/\s/g, "") !== "";
 }
 
 export default function ProjectForm({
@@ -54,15 +46,23 @@ export default function ProjectForm({
   error,
   disabled,
 }: ProjectFormProps) {
+  const [content, setContent] = useState(initial?.content || "");
   const [title, setTitle] = useState(initial?.title || "");
   const [summary, setSummary] = useState(initial?.summary || "");
   const [tags, setTags] = useState<string[]>(initial?.tags || []);
   const [tagInput, setTagInput] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [content, setContent] = useState(initial?.content || "");
   const [duration, setDuration] = useState(initial?.duration || "");
   const [formError, setFormError] = useState<string>("");
   const router = useRouter();
+  const toastEditorRef = useRef<any>(null);
+
+  const ToastEditor = dynamic(
+    () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
+    { ssr: false }
+  );
+
+  // ProseMirror 에디터 관련 코드(useEffect, editorRef, viewRef 등) 완전 삭제
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -75,10 +75,8 @@ export default function ProjectForm({
     setTags(tags.filter((t) => t !== tag));
   };
 
-  // 등록 버튼 클릭 핸들러
   const handleRegister = async () => {
     setFormError("");
-
     if (!title.trim() || !isContentValid(content)) {
       setFormError("제목과 내용은 필수입니다.");
       return;
@@ -100,30 +98,6 @@ export default function ProjectForm({
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-  // Quill 에디터 설정
-  const quillModules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      ["clean"],
-    ],
-    imageResize: {},
-  };
-
-  const quillFormats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "list",
-    "bullet",
-    "link",
-    "image",
-  ];
-
   return (
     <div className="space-y-8 text-white max-w-2xl mx-auto px-4 py-8">
       {/* 제목 */}
@@ -140,10 +114,10 @@ export default function ProjectForm({
         />
       </div>
 
-      {/* 소개글 입력 */}
-      <div className="mb-6">
+      {/* 소개글 */}
+      <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
-          소개글 (카드/상세에 표시될 간단 요약)
+          소개글
         </label>
         <input
           type="text"
@@ -154,27 +128,27 @@ export default function ProjectForm({
         />
       </div>
 
-      {/* 본문(react-quill) */}
+      {/* 본문(ProseMirror) */}
       <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
-          본문 (HTML 지원)
+          본문
         </label>
-        <div className="bg-[#18181b] border border-gray-700 rounded-md">
-          <ReactQuill
-            value={content}
-            onChange={setContent}
-            modules={quillModules}
-            formats={quillFormats}
-            placeholder="프로젝트 내용을 작성해 주세요..."
-            className="text-white"
-            style={{
-              height: "400px",
-            }}
-          />
-        </div>
+        <ToastEditor
+          ref={toastEditorRef}
+          initialValue={content}
+          previewStyle="vertical"
+          height="400px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          onChange={() => {
+            const data = toastEditorRef.current?.getInstance().getMarkdown();
+            setContent(data);
+          }}
+          hideModeSwitch={false}
+        />
       </div>
 
-      {/* 작업기간 입력 */}
+      {/* 작업기간 */}
       <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
           작업기간
@@ -184,7 +158,7 @@ export default function ProjectForm({
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
           className="w-full px-4 py-2 bg-[#18181b] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/60 rounded-md text-base"
-          placeholder="예: 2024.01 ~ 2024.03, 2개월, 10일 등"
+          placeholder="예: 2024.01 ~ 2024.03"
         />
       </div>
 
@@ -259,13 +233,10 @@ export default function ProjectForm({
       </div>
 
       {/* 에러 메시지 */}
-      {formError && (
+      {(formError || error) && (
         <div className="text-red-400 text-sm font-semibold mt-2">
-          {formError}
+          {formError || error}
         </div>
-      )}
-      {error && (
-        <div className="text-red-400 text-sm font-semibold mt-2">{error}</div>
       )}
 
       {/* 등록 버튼 */}
