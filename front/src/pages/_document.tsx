@@ -5,7 +5,13 @@ export default function Document() {
     <Html lang="ko">
       <Head>
         <title>포트폴리오 APOL</title>
-        <link rel="icon" href="/apol-favicon.png" type="image/png" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link
+          rel="icon"
+          href="/apol-favicon.png"
+          type="image/png"
+          sizes="32x32"
+        />
 
         <meta
           name="description"
