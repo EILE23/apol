@@ -30,6 +30,29 @@ router.get("/logs", async (req, res) => {
   }
 });
 
+// Save client IP from frontend
+router.post("/client-ip", async (req, res) => {
+  try {
+    const { ip, user_agent, path, referrer } = req.body;
+
+    await AccessLogModel.create({
+      timestamp: new Date(),
+      ip: ip,
+      user_agent: user_agent,
+      referrer: referrer,
+      path: path,
+      method: "GET",
+      status_code: 200,
+      response_time: 0,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving client IP:", error);
+    res.status(500).json({ error: "Failed to save client IP" });
+  }
+});
+
 // Get access statistics
 router.get("/stats", async (req, res) => {
   try {

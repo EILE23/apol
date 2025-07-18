@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { isAdminLoggedIn } from "../util/auth";
 import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
+import StatsCards from "../components/dashboard/StatsCards";
+import LogsTable from "../components/dashboard/LogsTable";
 
 interface AccessLog {
   id: number;
@@ -19,6 +21,9 @@ interface AccessStats {
   totalVisits: number;
   uniqueIPs: number;
   todayVisits: number;
+  todayUniqueIPs: number;
+  weekUniqueIPs: number;
+  monthUniqueIPs: number;
   topPaths: Array<{ path: string; count: number }>;
 }
 
@@ -77,17 +82,6 @@ export default function Dashboard() {
     setCurrentPage(page);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("ko-KR");
-  };
-
-  const getStatusColor = (statusCode: number) => {
-    if (statusCode >= 200 && statusCode < 300) return "text-green-400";
-    if (statusCode >= 400 && statusCode < 500) return "text-yellow-400";
-    if (statusCode >= 500) return "text-red-400";
-    return "text-gray-400";
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col">
@@ -118,34 +112,7 @@ export default function Dashboard() {
           )}
 
           {/* 통계 카드 */}
-          {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-gray-400 text-sm font-medium mb-2">
-                  총 방문수
-                </h3>
-                <p className="text-3xl font-bold text-white">
-                  {stats.totalVisits.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-gray-400 text-sm font-medium mb-2">
-                  고유 IP 수
-                </h3>
-                <p className="text-3xl font-bold text-white">
-                  {stats.uniqueIPs.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-gray-400 text-sm font-medium mb-2">
-                  오늘 방문수
-                </h3>
-                <p className="text-3xl font-bold text-white">
-                  {stats.todayVisits.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          )}
+          {stats && <StatsCards stats={stats} />}
 
           {/* 인기 경로 */}
           {stats && stats.topPaths.length > 0 && (
@@ -172,127 +139,11 @@ export default function Dashboard() {
           )}
 
           {/* 접속 로그 테이블 */}
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-700">
-              <h3 className="text-xl font-semibold text-white">
-                최근 접속 로그
-              </h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-900/50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      시간
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      IP
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      경로
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      상태
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      응답시간
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-gray-700/30">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {formatDate(log.timestamp)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
-                        {log.ip}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        <span className="font-mono">{log.method}</span>{" "}
-                        {log.path}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span
-                          className={`font-semibold ${getStatusColor(
-                            log.status_code
-                          )}`}
-                        >
-                          {log.status_code}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {log.response_time}ms
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* 페이지네이션 */}
-            {pagination.totalPages > 1 && (
-              <div className="px-6 py-4 border-t border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-400">
-                    총 {pagination.total.toLocaleString()}개 중{" "}
-                    {(pagination.page - 1) * pagination.limit + 1}-
-                    {Math.min(
-                      pagination.page * pagination.limit,
-                      pagination.total
-                    )}
-                    개 표시
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handlePageChange(pagination.page - 1)}
-                      disabled={!pagination.hasPrev}
-                      className="px-3 py-1 text-sm bg-gray-700 text-gray-300 rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      이전
-                    </button>
-
-                    <div className="flex items-center space-x-1">
-                      {Array.from(
-                        { length: Math.min(5, pagination.totalPages) },
-                        (_, i) => {
-                          const pageNum =
-                            Math.max(
-                              1,
-                              Math.min(
-                                pagination.totalPages - 4,
-                                pagination.page - 2
-                              )
-                            ) + i;
-                          return (
-                            <button
-                              key={pageNum}
-                              onClick={() => handlePageChange(pageNum)}
-                              className={`px-3 py-1 text-sm rounded ${
-                                pageNum === pagination.page
-                                  ? "bg-blue-600 text-white"
-                                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                              }`}
-                            >
-                              {pageNum}
-                            </button>
-                          );
-                        }
-                      )}
-                    </div>
-
-                    <button
-                      onClick={() => handlePageChange(pagination.page + 1)}
-                      disabled={!pagination.hasNext}
-                      className="px-3 py-1 text-sm bg-gray-700 text-gray-300 rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      다음
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <LogsTable
+            logs={logs}
+            pagination={pagination}
+            onPageChange={handlePageChange}
+          />
         </div>
       </main>
       <Footer />

@@ -15,7 +15,11 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Trust proxy to get real IP addresses
-app.set("trust proxy", true);
+// This tells Express to trust the proxy and use X-Forwarded-* headers
+app.set("trust proxy", "loopback, linklocal, uniquelocal");
+
+// Enable trust proxy for all routes
+app.enable("trust proxy");
 
 app.use(
   cors({
@@ -26,7 +30,7 @@ app.use(
 app.use(express.json({ limit: "100mb" }));
 
 // Access logging middleware
-app.use(accessLogMiddleware);
+// app.use(accessLogMiddleware);
 
 app.use("/api/main", mainRouter);
 app.use("/api/projects", projectRouter);
