@@ -3,9 +3,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mainRouter from "./routes/main.route";
 import projectRouter from "./routes/project.route";
+import accessLogRouter from "./routes/accessLog.route";
 import path from "path";
 import { Request, Response, NextFunction } from "express";
 import { pool } from "./util/db";
+import { accessLogMiddleware } from "./middleware/accessLog.middleware";
 
 dotenv.config();
 
@@ -20,9 +22,12 @@ app.use(
 );
 app.use(express.json({ limit: "100mb" }));
 
-app.use("/api/main", mainRouter);
+// Access logging middleware
+app.use(accessLogMiddleware);
 
+app.use("/api/main", mainRouter);
 app.use("/api/projects", projectRouter);
+app.use("/api/access-logs", accessLogRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/", (req, res) => {

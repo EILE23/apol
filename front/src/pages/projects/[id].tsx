@@ -118,7 +118,7 @@ export default function ProjectDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col">
       <Header type="projects" />
       <main className="pt-20 flex-1">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-8 sm:px-12 lg:px-16 py-12">
           <PostDetail post={postDetailData} />
           {isAdmin ? (
             <div className="flex gap-3 justify-end mt-8">
