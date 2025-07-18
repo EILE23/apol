@@ -27,6 +27,15 @@ export default function Dashboard() {
   const [stats, setStats] = useState<AccessStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 50,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false,
+  });
 
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -37,19 +46,22 @@ export default function Dashboard() {
       return;
     }
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const fetchData = async () => {
     try {
       const [logsRes, statsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/access-logs/logs?limit=50`),
+        fetch(
+          `${API_BASE_URL}/api/access-logs/logs?page=${currentPage}&limit=50`
+        ),
         fetch(`${API_BASE_URL}/api/access-logs/stats`),
       ]);
 
       if (logsRes.ok && statsRes.ok) {
         const logsData = await logsRes.json();
         const statsData = await statsRes.json();
-        setLogs(logsData);
+        setLogs(logsData.logs);
+        setPagination(logsData.pagination);
         setStats(statsData);
       } else {
         setError("데이터를 불러오는데 실패했습니다.");
@@ -59,6 +71,10 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const formatDate = (dateString: string) => {
@@ -213,6 +229,69 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
+
+            {/* 페이지네이션 */}
+            {pagination.totalPages > 1 && (
+              <div className="px-6 py-4 border-t border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-400">
+                    총 {pagination.total.toLocaleString()}개 중{" "}
+                    {(pagination.page - 1) * pagination.limit + 1}-
+                    {Math.min(
+                      pagination.page * pagination.limit,
+                      pagination.total
+                    )}
+                    개 표시
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handlePageChange(pagination.page - 1)}
+                      disabled={!pagination.hasPrev}
+                      className="px-3 py-1 text-sm bg-gray-700 text-gray-300 rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      이전
+                    </button>
+
+                    <div className="flex items-center space-x-1">
+                      {Array.from(
+                        { length: Math.min(5, pagination.totalPages) },
+                        (_, i) => {
+                          const pageNum =
+                            Math.max(
+                              1,
+                              Math.min(
+                                pagination.totalPages - 4,
+                                pagination.page - 2
+                              )
+                            ) + i;
+                          return (
+                            <button
+                              key={pageNum}
+                              onClick={() => handlePageChange(pageNum)}
+                              className={`px-3 py-1 text-sm rounded ${
+                                pageNum === pagination.page
+                                  ? "bg-blue-600 text-white"
+                                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        }
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => handlePageChange(pagination.page + 1)}
+                      disabled={!pagination.hasNext}
+                      className="px-3 py-1 text-sm bg-gray-700 text-gray-300 rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      다음
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

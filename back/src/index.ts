@@ -14,6 +14,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Trust proxy to get real IP addresses
+app.set("trust proxy", true);
+
 app.use(
   cors({
     origin: ["https://apol.site", "https://www.apol.site"],

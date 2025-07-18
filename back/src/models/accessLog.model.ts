@@ -56,6 +56,26 @@ export class AccessLogModel {
     return rows;
   }
 
+  static async getAllWithPagination(
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<AccessLog[]> {
+    const { rows } = await pool.query(
+      `SELECT * FROM "apol_schema"."access_logs"
+       ORDER BY timestamp DESC
+       LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    );
+    return rows;
+  }
+
+  static async getTotalCount(): Promise<number> {
+    const { rows } = await pool.query(
+      'SELECT COUNT(*) as total FROM "apol_schema"."access_logs"'
+    );
+    return parseInt(rows[0].total);
+  }
+
   static async getStats(): Promise<{
     totalVisits: number;
     uniqueIPs: number;
