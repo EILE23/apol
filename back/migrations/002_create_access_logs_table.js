@@ -21,24 +21,18 @@ const up = (pgm) => {
     }
   );
 
-  // 인덱스 생성
-  pgm.createIndex(
-    { schema: "apol_schema", name: "access_logs" },
-    "idx_access_logs_timestamp",
-    { columns: "timestamp" }
-  );
+  // 인덱스 생성 (정상 컬럼 기준)
+  pgm.createIndex({ schema: "apol_schema", name: "access_logs" }, "timestamp", {
+    name: "idx_access_logs_timestamp",
+  });
 
-  pgm.createIndex(
-    { schema: "apol_schema", name: "access_logs" },
-    "idx_access_logs_ip",
-    { columns: "ip" }
-  );
+  pgm.createIndex({ schema: "apol_schema", name: "access_logs" }, "ip", {
+    name: "idx_access_logs_ip",
+  });
 
-  pgm.createIndex(
-    { schema: "apol_schema", name: "access_logs" },
-    "idx_access_logs_path",
-    { columns: "path" }
-  );
+  pgm.createIndex({ schema: "apol_schema", name: "access_logs" }, "path", {
+    name: "idx_access_logs_path",
+  });
 };
 
 const down = (pgm) => {
