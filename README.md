@@ -24,7 +24,6 @@ apol_/
 └── README.md
 ```
 
-
 ## 기술 스택
 
 ### 백엔드
@@ -42,10 +41,9 @@ apol_/
 - Tailwind CSS
 
 ### DB
+
 - PostgreSQL
 
 ## 개발 환경
 
-1. Node.js 18+ , Nest.js 14+ , PostgreSQL
-
-
+1. Node.js 18+ , Next.js 14+ , PostgreSQL
