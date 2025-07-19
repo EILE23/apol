@@ -1,0 +1,49 @@
+name: Deploy APOL
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Zip files
+        run: |
+          zip -r apol.zip . -x "node_modules/*" "*.git*" "*.github/*"
+
+      - name: Copy to EC2
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          source: "apol.zip"
+          target: "/home/ubuntu"
+
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu
+            rm -rf apol
+            unzip -o apol.zip
+            cd apol/back
+            npm install
+            pm2 restart apol-back || pm2 start npm --name apol-back -- run start
+            cd ../front
+            npm install
+            npm run build
+            pm2 restart apol-front || pm2 start npm --name apol-front -- run start
