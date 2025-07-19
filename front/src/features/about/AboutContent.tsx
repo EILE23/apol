@@ -1,7 +1,12 @@
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
-
+import ProjectCard from "@/components/projects/ProjectCard";
+import { projectApi, Project } from "@/util/api";
+import { useEffect, useState } from "react";
 export default function AboutContent() {
+  const [projects, setProjects] = useState<Project[]>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const secondarySkills = [
     "React",
     "Next.js",
@@ -14,6 +19,23 @@ export default function AboutContent() {
     "Prisma",
   ];
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await projectApi.getAll();
+        setProjects(data);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "프로젝트 목록을 불러오는데 실패했습니다."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
   return (
     <main className="pt-20 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* 상단 링크 */}
@@ -47,7 +69,6 @@ export default function AboutContent() {
                 <div className="text-6xl text-gray-400">👨‍💻</div>
               </div>
             </div>
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gray-500 rounded-full opacity-80"></div>
           </div>
           {/* 오른쪽 내용 */}
           <div className="space-y-10">
@@ -112,7 +133,26 @@ export default function AboutContent() {
           </div>
         </div>
       </section>
-
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
+          진행한 프로젝트
+        </h2>
+        <div className="grid gap-8 md:grid-cols-2">
+          {loading ? (
+            <p className="text-gray-400">로딩 중...</p>
+          ) : error ? (
+            <p className="text-red-400">{error}</p>
+          ) : projects && projects.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-2">
+              {projects.map((project: Project) => (
+                <ProjectCard key={project.id} project={project} type="list" />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">표시할 프로젝트가 없습니다.</p>
+          )}
+        </div>
+      </section>
       {/* 자기소개서(본문) 섹션 - 스타일 통일 */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-transparent rounded-2xl p-0">

@@ -29,7 +29,7 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
   const htmlContent = post.content ? md.render(post.content) : "";
 
   return (
-    <main className="pt-20 px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
+    <main className="pt-20 px-1 sm:px-3 md:px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
       {/* 제목 */}
       <header className="mb-10">
         {post.category && (
