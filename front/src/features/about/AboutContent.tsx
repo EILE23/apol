@@ -41,29 +41,27 @@ export default function AboutContent() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-transparent rounded-2xl p-0">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 pt-24">
-          안녕하세요.
-          <br />
-          백엔드 개발자 안상현입니다.
-      </h2>
-      <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
-      다양한 경험을 거쳐 개발에 집중하게 되었습니다.
-      현재는 백엔드 중심의 사이드 프로젝트를 진행하며 실무 역량을 키워가고 있습니다.
-      </div>
-      <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
-        <p>
-        구조를 이해하고 효율적인 흐름을 설계하는 데 관심이 많습니다.
-        문제를 분석하고 해결하는 과정을 즐깁니다.
-        </p>
-       <p>
-        NestJS, PostgreSQL, AWS EC2 등을 활용해 실제 서비스를 개발·배포해왔고,
-        성능 최적화와 자동화에 관심이 많습니다.
-        </p>
-        <p>
-        조용히, 꾸준히, 깊이 있게 성장하는 개발자가 되고자 합니다.
-        </p>
+            안녕하세요.
+            <br />
+            백엔드 개발자 안상현입니다.
+          </h2>
+          <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
+            다양한 경험을 거쳐 개발에 집중하게 되었습니다. 현재는 백엔드 중심의
+            사이드 프로젝트를 진행하며 실무 역량을 키워가고 있습니다.
+          </div>
+          <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
+            <p>
+              구조를 이해하고 효율적인 흐름을 설계하는 데 관심이 많습니다.
+              문제를 분석하고 해결하는 과정을 즐깁니다.
+            </p>
+            <p>
+              NestJS, PostgreSQL, AWS EC2 등을 활용해 실제 서비스를
+              개발·배포해왔고, 성능 최적화와 자동화에 관심이 많습니다.
+            </p>
+            <p>조용히, 꾸준히, 깊이 있게 성장하는 개발자가 되고자 합니다.</p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
       {/* 상단 링크 */}
       <div className="mb-8 px-4 max-w-3xl mx-auto">
         <Link href="/" className="text-white/70 hover:underline text-sm">
@@ -169,16 +167,14 @@ export default function AboutContent() {
           ) : error ? (
             <p className="text-red-400">{error}</p>
           ) : projects && projects.length > 0 ? (
-            <div className="grid gap-8 md:grid-cols-2">
-              {projects.map((project: Project) => (
-                <ProjectCard key={project.id} project={project} type="about" />
-              ))}
-            </div>
+            projects.map((project: Project) => (
+              <ProjectCard key={project.id} project={project} type="about" />
+            ))
           ) : (
             <p className="text-gray-400">표시할 프로젝트가 없습니다.</p>
           )}
         </div>
-   
+      </section>
     </main>
   );
 }
