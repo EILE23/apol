@@ -17,7 +17,7 @@ export default function ProjectEditPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [content, setContent] = useState("");
   useEffect(() => {
     if (id && typeof id === "string") {
       fetchProject();
@@ -32,8 +32,12 @@ export default function ProjectEditPage() {
 
   const fetchProject = async () => {
     try {
-      const data = await projectApi.getById(id as string);
+      const [data, contentText] = await Promise.all([
+        projectApi.getById(id as string),
+        projectApi.getContent(id as string),
+      ]);
       setProject(data);
+      setContent(contentText);
     } catch (err) {
       setError(
         err instanceof Error
@@ -87,7 +91,7 @@ export default function ProjectEditPage() {
               summary: project.summary,
               tags: project.tags,
               thumbnail: project.thumbnail,
-              content: project.content,
+              content: content,
             }}
             onSubmit={async (data) => {
               setIsSubmitting(true);
