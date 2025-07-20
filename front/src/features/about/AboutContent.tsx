@@ -38,6 +38,32 @@ export default function AboutContent() {
   }, []);
   return (
     <main className="pt-20 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-transparent rounded-2xl p-0">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 pt-24">
+          안녕하세요.
+          <br />
+          백엔드 개발자 안상현입니다.
+      </h2>
+      <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
+      다양한 경험을 거쳐 개발에 집중하게 되었습니다.
+      현재는 백엔드 중심의 사이드 프로젝트를 진행하며 실무 역량을 키워가고 있습니다.
+      </div>
+      <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
+        <p>
+        구조를 이해하고 효율적인 흐름을 설계하는 데 관심이 많습니다.
+        문제를 분석하고 해결하는 과정을 즐깁니다.
+        </p>
+       <p>
+        NestJS, PostgreSQL, AWS EC2 등을 활용해 실제 서비스를 개발·배포해왔고,
+        성능 최적화와 자동화에 관심이 많습니다.
+        </p>
+        <p>
+        조용히, 꾸준히, 깊이 있게 성장하는 개발자가 되고자 합니다.
+        </p>
+        </div>
+      </div>
+    </section>
       {/* 상단 링크 */}
       <div className="mb-8 px-4 max-w-3xl mx-auto">
         <Link href="/" className="text-white/70 hover:underline text-sm">
@@ -152,38 +178,7 @@ export default function AboutContent() {
             <p className="text-gray-400">표시할 프로젝트가 없습니다.</p>
           )}
         </div>
-      </section>
-      {/* 자기소개서(본문) 섹션 - 스타일 통일 */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-transparent rounded-2xl p-0">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 pt-24">
-            안녕하세요.
-            <br />
-            저는 꾸준히 성장하는 백엔드 개발자를 꿈꾸는 안상현이라고 합니다.
-          </h2>
-          <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
-            경력상 개발과 동 떨어진 다양한 경험을 해왔지만, 현재는 개발에
-            매진하고 있습니다.
-          </div>
-          <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
-            <p>
-              저는 조용하고 깊이 파고드는 성향이 있습니다. 새로운 기술을
-              탐구하고, 원리를 이해하며 구조를 설계하는 과정을 좋아합니다.
-            </p>
-            <p>
-              혼자서 집중하는 시간을 즐기며, 주어진 일에 책임감 있게 임하는
-              스타일입니다. 실무 경험은 부족하지만, 사이드 프로젝트와 개인
-              학습으로 역량을 키워왔고 <br />
-              현재는.. 스스로 다른 것들을 보거나 어떠한 기능들을 구현할 때
-              로직부터 생각해버리는 뇌 구조가 되어있습니다.
-            </p>
-            <p>
-              앞으로는 좋은 팀과 함께 성장하며, 더 나은 코드를 만들고 서비스에
-              기여하고 싶습니다.
-            </p>
-          </div>
-        </div>
-      </section>
+   
     </main>
   );
 }
