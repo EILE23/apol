@@ -20,10 +20,14 @@ export class ProjectController {
     try {
       const { id } = req.params;
       const project = await ProjectModel.getById(id);
+
       if (!project) {
         return res.status(404).json({ error: "프로젝트를 찾을 수 없습니다." });
       }
-      res.json(project);
+
+      // content 필드 제거
+      const { content, ...metaOnly } = project;
+      res.json(metaOnly);
     } catch (error) {
       console.error("[getProjectById]", error);
       res.status(500).json({ error: "프로젝트를 가져오는데 실패했습니다." });
@@ -87,6 +91,20 @@ export class ProjectController {
     } catch (error) {
       console.error("[deleteProject]", error);
       res.status(500).json({ error: "프로젝트 삭제에 실패했습니다." });
+    }
+  }
+
+  static async getProjectContent(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const project = await ProjectModel.getById(id);
+      if (!project) {
+        return res.status(404).send("프로젝트를 찾을 수 없습니다.");
+      }
+      res.send(project.content || "");
+    } catch (error) {
+      console.error("[getProjectContent]", error);
+      res.status(500).send("본문을 가져오는데 실패했습니다.");
     }
   }
 }

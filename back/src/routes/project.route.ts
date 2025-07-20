@@ -22,6 +22,8 @@ router.get("/", ProjectController.getAllProjects);
 // GET /api/projects/:id - 특정 프로젝트 조회
 router.get("/:id", ProjectController.getProjectById);
 
+router.get("/:id/content", ProjectController.getProjectContent);
+
 // POST /api/projects - 새 프로젝트 생성
 router.post("/", ProjectController.createProject);
 

@@ -15,6 +15,7 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const { id } = router.query;
   const [project, setProject] = useState<Project | null>(null);
+  const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,7 +34,9 @@ export default function ProjectDetailPage() {
   const fetchProject = async () => {
     try {
       const data = await projectApi.getById(id as string);
+      const contentText = await projectApi.getContent(id as string);
       setProject(data);
+      setContent(contentText);
     } catch (err) {
       setError(
         err instanceof Error
@@ -44,7 +47,6 @@ export default function ProjectDetailPage() {
       setLoading(false);
     }
   };
-
   const handleDelete = async () => {
     if (!project || !confirm("정말로 이 프로젝트를 삭제하시겠습니까?")) {
       return;
@@ -107,7 +109,7 @@ export default function ProjectDetailPage() {
     id: project.id,
     title: project.title,
     description: project.summary,
-    fullDescription: project.content,
+    fullDescription: content,
     image: project.thumbnail,
     technologies: project.tags,
     date: project.createdAt,
