@@ -17,11 +17,8 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Zip project files
-        run: |
-          mkdir deploy && cp -r . deploy/apol
-          cd deploy
-          zip -r apol.zip apol -x "apol/node_modules/*" "apol/.git*" "apol/.github/*"
+      - name: Zip only apol directory
+        run: zip -r apol.zip apol -x "apol/node_modules/*" "apol/.git/*" "apol/.github/*"
 
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.3
@@ -29,7 +26,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
-          source: "deploy/apol.zip"
+          source: "apol.zip"
           target: "/home/ubuntu"
 
       - name: SSH and Deploy on EC2
@@ -41,11 +38,17 @@ jobs:
           script: |
             cd /home/ubuntu
             rm -rf apol
-            unzip -o apol.zip -d .
+            unzip -o apol.zip
+
+            # 백엔드
             cd apol/back
+            echo "${{ secrets.EC2_ENV_BACKEND }}" > .env
             npm install
             pm2 restart apol-back || pm2 start npm --name apol-back -- run start
+
+            # 프론트엔드
             cd ../front
+            echo "${{ secrets.EC2_ENV_FRONTEND }}" > .env
             npm install
             npm run build
             pm2 restart apol-front || pm2 start npm --name apol-front -- run start
