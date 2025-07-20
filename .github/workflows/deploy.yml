@@ -52,10 +52,10 @@ jobs:
             cd apol/back
             npm install
             npm run build
-            pm2 restart apol-back || pm2 start npm --name apol-back -- run start
+            pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
             # 프론트 빌드 + 실행
             cd ../front
             npm install --legacy-peer-deps
             npm run build
-            pm2 restart apol-front || pm2 start npm --name apol-front -- run start
+            pm2 reload apol-front || pm2 start npm --name apol-front -- run start
