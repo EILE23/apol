@@ -1,16 +1,13 @@
-import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import express, { NextFunction, Request, Response } from "express";
+import path from "path";
+import accessLogRouter from "./routes/accessLog.route";
 import mainRouter from "./routes/main.route";
 import projectRouter from "./routes/project.route";
-import accessLogRouter from "./routes/accessLog.route";
-import path from "path";
-import { Request, Response, NextFunction } from "express";
-import { pool } from "./util/db";
-import { accessLogMiddleware } from "./middleware/accessLog.middleware";
 
 dotenv.config();
-
+//test
 const app = express();
 const PORT = process.env.PORT || 4000;
 
