@@ -17,9 +17,9 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Zip back and front directories
+      - name: Zip apol directory (back + front only)
         run: |
-          zip -r apol.zip back front -x "**/node_modules/*"
+          zip -r apol.zip apol/back apol/front -x "**/node_modules/*" "**/.git/*" "**/.github/*"
 
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.3
@@ -41,18 +41,18 @@ jobs:
             rm -rf apol
             unzip -o apol.zip
 
-            mkdir -p apol
-            mv back front apol/
-
-            # .env 생성
+            # .env 파일 삽입
             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
             echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
 
+            # 백엔드 빌드 + 실행
             cd apol/back
             npm install
+            npm run build
             pm2 restart apol-back || pm2 start npm --name apol-back -- run start
 
+            # 프론트 빌드 + 실행
             cd ../front
-            npm install
+            npm install --production=false
             npm run build
             pm2 restart apol-front || pm2 start npm --name apol-front -- run start
