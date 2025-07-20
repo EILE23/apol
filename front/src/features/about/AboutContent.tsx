@@ -1,7 +1,7 @@
-import Link from "next/link";
-import Badge from "@/components/ui/Badge";
 import ProjectCard from "@/components/projects/ProjectCard";
-import { projectApi, Project } from "@/util/api";
+import Badge from "@/components/ui/Badge";
+import { Project, projectApi } from "@/util/api";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 export default function AboutContent() {
   const [projects, setProjects] = useState<Project[]>();
@@ -145,7 +145,7 @@ export default function AboutContent() {
           ) : projects && projects.length > 0 ? (
             <div className="grid gap-8 md:grid-cols-2">
               {projects.map((project: Project) => (
-                <ProjectCard key={project.id} project={project} type="list" />
+                <ProjectCard key={project.id} project={project} type="about" />
               ))}
             </div>
           ) : (

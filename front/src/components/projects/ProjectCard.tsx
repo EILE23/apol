@@ -1,4 +1,3 @@
-import Badge from "../ui/Badge";
 import Link from "next/link";
 
 export interface ProjectCardProps {
@@ -11,7 +10,7 @@ export interface ProjectCardProps {
     duration?: string;
     content?: string;
   };
-  type?: "main" | "list";
+  type?: "main" | "list" | "about";
 }
 
 export default function ProjectCard({
@@ -77,6 +76,59 @@ export default function ProjectCard({
           {/* 날짜/작업기간 */}
           <div className="text-xs text-gray-400 text-left mt-auto">
             {project.duration ? <>{project.duration}</> : null}
+          </div>
+        </div>
+      </Link>
+    );
+  }
+  if (type === "about") {
+    return (
+      <Link href={`/projects/${project.id}`} className="block group">
+        <div className="flex flex-col w-full shadow-[0_2px_16px_0_rgba(0,0,0,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_4px_32px_0_rgba(0,0,0,0.13)] cursor-pointer bg-transparent">
+          {/* 이미지 (상단) */}
+          <div className="w-full aspect-[4/3] bg-gray-800 overflow-hidden">
+            {project.thumbnail ? (
+              <img
+                src={
+                  project.thumbnail.startsWith("/uploads/")
+                    ? `${API_BASE_URL}${project.thumbnail}`
+                    : project.thumbnail
+                }
+                alt={project.title}
+                className="w-full h-full object-cover object-center"
+                draggable={false}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm bg-gray-700">
+                썸네일 없음
+              </div>
+            )}
+          </div>
+          {/* 텍스트 (하단) */}
+          <div className="flex flex-col gap-2 px-6 py-5 bg-transparent text-center">
+            <div className="flex flex-wrap justify-center gap-2 mb-1">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-[#23232a] text-gray-400 px-2 py-0.5 rounded-full text-xs font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <h3 className="text-xl font-bold text-white leading-tight line-clamp-2 mb-1">
+              {project.title}
+            </h3>
+            {project.summary && (
+              <div className="text-sm text-gray-400 line-clamp-2">
+                {project.summary}
+              </div>
+            )}
+            {project.duration && (
+              <div className="text-xs text-gray-500 mt-1">
+                {project.duration}
+              </div>
+            )}
           </div>
         </div>
       </Link>
