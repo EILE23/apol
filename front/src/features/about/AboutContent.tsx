@@ -1,7 +1,6 @@
 import ProjectCard from "@/components/projects/ProjectCard";
 import Badge from "@/components/ui/Badge";
 import { Project, projectApi } from "@/util/api";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 export default function AboutContent() {
   const [projects, setProjects] = useState<Project[]>();
@@ -39,6 +38,9 @@ export default function AboutContent() {
   return (
     <main className="pt-20 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          About Me
+        </h2>
         <div className="bg-transparent rounded-2xl p-0">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 pt-24">
             안녕하세요.
@@ -63,11 +65,6 @@ export default function AboutContent() {
         </div>
       </section>
       {/* 상단 링크 */}
-      <div className="mb-8 px-4 max-w-3xl mx-auto">
-        <Link href="/" className="text-white/70 hover:underline text-sm">
-          ← 홈으로 돌아가기
-        </Link>
-      </div>
 
       {/* About Me 섹션 */}
       <section
@@ -75,13 +72,9 @@ export default function AboutContent() {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8"
       >
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            About Me
-          </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            단순히 작동하는 코드를 넘어서, 유지보수 가능한 구조와 명확한 데이터
-            흐름을 중시합니다. 사용자의 편의성과 개발자의 효율성을 동시에
-            고민하며 성장하는 백엔드 지향 개발자입니다.
+            단순히 작동하는 코드를 넘어서, 사용자의 편의성과 개발자의 효율성을
+            동시에 고민하며 성장하고 싶습니다.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-12 items-start">
