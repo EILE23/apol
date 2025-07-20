@@ -19,6 +19,7 @@ jobs:
 
       - name: Prepare zip with correct structure
         run: |
+          rm -rf apol
           mkdir apol
           cp -r back front package*.json apol/
           zip -r apol.zip apol
