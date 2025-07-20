@@ -17,9 +17,12 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Zip apol directory (back + front only)
+      - name: Prepare and zip apol directory (back + front only)
         run: |
-          zip -r apol.zip apol/back apol/front -x "**/node_modules/*" "**/.git/*" "**/.github/*"
+          mkdir apol
+          cp -r back apol/
+          cp -r front apol/
+          zip -r apol.zip apol -x "**/node_modules/*" "**/.git/*" "**/.github/*"
 
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.3
@@ -53,6 +56,6 @@ jobs:
 
             # 프론트 빌드 + 실행
             cd ../front
-            npm install --production=false
+            npm install
             npm run build
             pm2 restart apol-front || pm2 start npm --name apol-front -- run start
