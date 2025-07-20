@@ -113,7 +113,7 @@ export default function ProjectDetailPage() {
     image: project.thumbnail,
     technologies: project.tags,
     date: project.createdAt,
-    content: project.content,
+    content: content,
   };
 
   return (
