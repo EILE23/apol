@@ -56,6 +56,6 @@ jobs:
 
             # 프론트 빌드 + 실행
             cd ../front
-            npm install
+            npm install --legacy-peer-deps
             npm run build
             pm2 restart apol-front || pm2 start npm --name apol-front -- run start
