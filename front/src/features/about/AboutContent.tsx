@@ -71,12 +71,6 @@ export default function AboutContent() {
         id="about"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8"
       >
-        <div className="text-center mb-16">
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            단순히 작동하는 코드를 넘어서, 사용자의 편의성과 개발자의 효율성을
-            동시에 고민하며 성장하고 싶습니다.
-          </p>
-        </div>
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* 왼쪽 이미지 */}
           <div className="relative">
