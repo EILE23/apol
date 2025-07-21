@@ -33,6 +33,7 @@ app.use("/api/main", mainRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/access-logs", accessLogRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/markdown", express.static(path.join(__dirname, "../markdown")));
 
 app.get("/", (req, res) => {
   res.send(" 백엔드 서버 작동 중");
