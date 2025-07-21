@@ -51,10 +51,14 @@ jobs:
             cd /home/ubuntu
 
             cp -r apol/back/uploads /tmp/uploads_backup || true
+            cp -r apol/back/markdown /tmp/markdown_backup || true
+
             rm -rf apol
             unzip -o apol.zip
             mkdir -p apol/back/markdown
+
             cp -r /tmp/uploads_backup apol/back/uploads || true
+            cp -r /tmp/markdown_backup/* apol/back/markdown/ || true
 
             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
             echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
