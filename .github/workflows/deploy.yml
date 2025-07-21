@@ -19,8 +19,8 @@ jobs:
 
       - name: Install deps (for zip include safety)
         run: |
-          cd back && npm ci
-          cd ../front && npm ci
+          cd back && npm install --legacy-peer-deps
+          cd ../front && npm install --legacy-peer-deps
 
       - name: Zip project
         run: |
