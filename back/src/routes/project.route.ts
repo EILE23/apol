@@ -2,19 +2,10 @@ import { Router } from "express";
 import { ProjectController } from "../controllers/project.controller";
 import multer from "multer";
 import path from "path";
-
+import { uploadImageToS3 } from "../controllers/upload.controller";
 const router = Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.resolve(__dirname, "../../uploads/"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
 // GET /api/projects - 모든 프로젝트 조회
 router.get("/", ProjectController.getAllProjects);
@@ -34,13 +25,6 @@ router.put("/:id", ProjectController.updateProject);
 router.delete("/:id", ProjectController.deleteProject);
 
 // 이미지 업로드
-router.post("/upload", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "파일이 업로드되지 않았습니다." });
-  }
-  // 실제 서비스라면, URL을 CDN 등으로 대체
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
-});
+router.post("/upload", upload.single("image"), uploadImageToS3);
 
 export default router;
