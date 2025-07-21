@@ -1,6 +1,6 @@
 // controllers/upload.controller.ts
-import { Request, Response } from "express";
 import AWS from "aws-sdk";
+import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 
 const s3 = new AWS.S3({
@@ -22,7 +22,6 @@ export const uploadImageToS3 = async (req: Request, res: Response) => {
         Bucket: process.env.AWS_S3_BUCKET!,
         Key: key,
         Body: req.file.buffer,
-        ACL: "public-read",
         ContentType: req.file.mimetype,
       })
       .promise();
