@@ -1,7 +1,9 @@
-import { Pool } from "pg";
+import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
+import { Pool } from "pg";
 
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 // DB 연결 설정
 const pool = new Pool({
   host: process.env.PG_HOST,
