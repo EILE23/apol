@@ -10,10 +10,10 @@ const upload = multer({ storage: multer.memoryStorage() });
 // GET /api/projects - 모든 프로젝트 조회
 router.get("/", ProjectController.getAllProjects);
 
+router.get("/:id/content", ProjectController.getProjectContent);
+
 // GET /api/projects/:id - 특정 프로젝트 조회
 router.get("/:id", ProjectController.getProjectById);
-
-router.get("/:id/content", ProjectController.getProjectContent);
 
 // POST /api/projects - 새 프로젝트 생성
 router.post("/", ProjectController.createProject);
