@@ -12,6 +12,29 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install deps (for zip include safety)
+        run: |
+          cd back && npm ci
+          cd ../front && npm ci
+
+      - name: Zip project
+        run: |
+          zip -r apol.zip apol -x "apol/node_modules/*" "apol/back/uploads/*"
+
+      - name: Upload zip to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          source: "apol.zip"
+          target: "/home/ubuntu/"
+
       - name: SSH and Deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -21,30 +44,21 @@ jobs:
           script: |
             cd /home/ubuntu
 
-            # uploads 백업
             cp -r apol/back/uploads /tmp/uploads_backup || true
-
-            # 기존 삭제 및 압축 해제
             rm -rf apol
             unzip -o apol.zip
-
             mkdir -p apol/back/markdown
-
-            # uploads 복원
             cp -r /tmp/uploads_backup apol/back/uploads || true
 
-            # .env 파일 삽입
             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
             echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
 
-            # 백엔드 빌드 + 실행
             cd apol/back
             npm install
             npm run build
             npm run migrate
             pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
-            # 프론트 빌드 + 실행
             cd ../front
             npm install --legacy-peer-deps
             npm run build
