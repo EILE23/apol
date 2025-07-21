@@ -4,11 +4,11 @@ import path from "path";
 
 // DB 연결 설정
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT || 5432),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.PG_HOST,
+  port: Number(process.env.PG_PORT || 5432),
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
 });
 
 // 마크다운 파일 저장 경로
