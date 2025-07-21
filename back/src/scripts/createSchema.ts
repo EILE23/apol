@@ -9,20 +9,20 @@ async function createSchema() {
     console.log(" 스키마 생성 완료: apol_schema");
 
     // 2. 테이블 생성
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS apol_schema.projects (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        summary TEXT,
-        content TEXT,
-        tags TEXT[],
-        thumbnail VARCHAR(255),
-        duration TEXT,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
-    console.log(" 테이블 생성 완료: apol_schema.projects");
+    // await pool.query(`
+    //   CREATE TABLE IF NOT EXISTS apol_schema.projects (
+    //     id SERIAL PRIMARY KEY,
+    //     title VARCHAR(255) NOT NULL,
+    //     summary TEXT,
+    //     content TEXT,
+    //     tags TEXT[],
+    //     thumbnail VARCHAR(255),
+    //     duration TEXT,
+    //     created_at TIMESTAMP DEFAULT NOW(),
+    //     updated_at TIMESTAMP DEFAULT NOW()
+    //   );
+    // `);
+    // console.log(" 테이블 생성 완료: apol_schema.projects");
 
     // 3. 샘플 데이터 삽입 (선택사항)
 
