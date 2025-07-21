@@ -19,12 +19,13 @@ jobs:
 
       - name: Install deps (for zip include safety)
         run: |
-          cd back && npm install --legacy-peer-deps
-          cd ../front && npm install --legacy-peer-deps
+          cd apol/back && npm install --legacy-peer-deps
+          cd front && npm install --legacy-peer-deps
 
       - name: Zip project
         run: |
-          zip -r apol.zip apol -x "apol/node_modules/*" "apol/back/uploads/*"
+          cd apol
+          zip -r ../apol.zip . -x "back/uploads/*" "back/node_modules/*" "back/front/node_modules/*" "*.zip" ".git/*"
 
       - name: Upload zip to EC2
         uses: appleboy/scp-action@master
@@ -51,15 +52,15 @@ jobs:
             cp -r /tmp/uploads_backup apol/back/uploads || true
 
             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
-            echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
+            echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/back/front/.env
 
             cd apol/back
-            npm install
+            npm install --legacy-peer-deps
             npm run build
             npm run migrate
             pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
-            cd ../front
+            cd front
             npm install --legacy-peer-deps
             npm run build
             pm2 reload apol-front || pm2 start npm --name apol-front -- run start
