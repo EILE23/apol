@@ -51,13 +51,15 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
         {post.description && (
           <p className="text-lg text-neutral-400">{post.description}</p>
         )}
-        <p className="text-sm text-neutral-500 mt-1">
-          {new Date(post.date).toLocaleDateString("ko-KR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+        {post.date && (
+          <p className="text-sm text-neutral-500 mt-1">
+            {new Date(post.date as string).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        )}
       </header>
       {post.image && (
         <div className="mb-12">
