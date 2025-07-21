@@ -53,7 +53,7 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
         )}
         {post.date && (
           <p className="text-sm text-neutral-500 mt-1">
-            {new Date(post.date).toLocaleDateString("ko-KR", {
+            {new Date(post.date as string).toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
               day: "numeric",
