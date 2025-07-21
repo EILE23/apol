@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { ProjectModel } from "../models/project.model";
 import fs from "fs/promises";
 import path from "path";
+import { ProjectModel } from "../models/project.model";
+import { deleteS3ObjectByUrl } from "../util/s3";
 
 const MARKDOWN_DIR = path.resolve("markdown");
 export class ProjectController {
@@ -111,6 +112,13 @@ export class ProjectController {
       const project = await ProjectModel.getById(id);
       if (!project) {
         return res.status(404).json({ error: "프로젝트를 찾을 수 없습니다." });
+      }
+
+      //  썸네일 S3 삭제
+      if (project.thumbnail) {
+        await deleteS3ObjectByUrl(project.thumbnail).catch((err) =>
+          console.warn("S3 썸네일 삭제 실패:", err.message)
+        );
       }
 
       //  마크다운 파일도 삭제

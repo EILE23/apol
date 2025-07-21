@@ -9,8 +9,8 @@ export interface Project {
   thumbnail?: string;
   duration?: string;
   contentPath?: string;
-  created_at?: Date;
-  updated_at?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class ProjectModel {
