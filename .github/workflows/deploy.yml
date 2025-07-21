@@ -19,15 +19,19 @@ jobs:
 
       - name: Install deps (for zip include safety)
         run: |
-          cd apol/back && npm install --legacy-peer-deps
+          cd back && npm install --legacy-peer-deps
           cd ../front && npm install --legacy-peer-deps
-          cd ../..
+          cd ..
+
+      - name: Create apol folder for zipping
+        run: |
+          mkdir apol
+          cp -r back front scripts package.json tsconfig* apol/
+          # 필요한 거 더 추가하면 됨 (예: prisma, public 등)
 
       - name: Zip project
         run: |
-          cd apol
-          zip -r ../apol.zip . -x "*/node_modules/*" "back/uploads/*" "*.zip" ".git/*"
-          cd ..
+          zip -r apol.zip apol -x "apol/**/node_modules/*" "apol/back/uploads/*" "*.zip" "apol/**/.git/*"
 
       - name: Upload zip to EC2
         uses: appleboy/scp-action@master
@@ -52,7 +56,7 @@ jobs:
 
             # 기존 삭제 및 압축 해제
             rm -rf apol
-            unzip -o apol.zip -d .
+            unzip -o apol.zip
 
             # 필수 디렉토리 생성
             mkdir -p apol/back/markdown
