@@ -3,6 +3,8 @@ import fs from "fs/promises";
 import path from "path";
 import { ProjectModel } from "../models/project.model";
 import { deleteS3ObjectByUrl } from "../util/s3";
+import TurndownService from "turndown";
+const turndownService = new TurndownService();
 
 const MARKDOWN_DIR = path.resolve("markdown");
 export class ProjectController {
@@ -59,7 +61,9 @@ export class ProjectController {
       // 2. 마크다운 파일 생성
       const filename = `project-${newProject.id}.md`;
       const filePath = path.join(MARKDOWN_DIR, filename);
-      await fs.writeFile(filePath, content, "utf-8");
+      const markdownContent = turndownService.turndown(content);
+
+      await fs.writeFile(filePath, markdownContent, "utf-8");
 
       // 3. 다시 contentPath 업데이트
       const updatedProject = await ProjectModel.update(
@@ -88,7 +92,8 @@ export class ProjectController {
 
       if (content && project.contentPath) {
         const filePath = path.join(MARKDOWN_DIR, project.contentPath);
-        await fs.writeFile(filePath, content, "utf-8");
+        const markdownContent = turndownService.turndown(content);
+        await fs.writeFile(filePath, markdownContent, "utf-8");
       }
 
       const updatedProject = await ProjectModel.update(id, {
