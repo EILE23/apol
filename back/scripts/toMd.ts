@@ -36,7 +36,7 @@ async function migrate() {
 
       // contentPath 업데이트
       await pool.query(
-        `UPDATE apol_schema.projects SET "contentPath" = $1 WHERE id = $2`,
+        `UPDATE apol_schema.projects SET contentpath = $1 WHERE id = $2`,
         [filename, id]
       );
 
