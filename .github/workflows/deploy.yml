@@ -50,26 +50,27 @@ jobs:
           script: |
             cd /home/ubuntu
 
-            cp -r apol/back/uploads /tmp/uploads_backup || true
-            cp -r apol/back/markdown /tmp/markdown_backup || true
+             cp -r apol/back/uploads /tmp/uploads_backup || true
+             mkdir -p /tmp/markdown_backup
+             cp -r apol/back/markdown/* /tmp/markdown_backup || true
 
-            rm -rf apol
-            unzip -o apol.zip
-            mkdir -p apol/back/markdown
+             rm -rf apol
+             unzip -o apol.zip
+             mkdir -p apol/back/markdown
 
-            cp -r /tmp/uploads_backup apol/back/uploads || true
-            cp -r /tmp/markdown_backup/* apol/back/markdown/ || true
+             cp -r /tmp/uploads_backup apol/back/uploads || true
+             cp -r /tmp/markdown_backup/* apol/back/markdown/ || true
 
-            echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
-            echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
+             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
+             echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
 
-            cd apol/back
-            npm install --legacy-peer-deps
-            npm run build
-            npm run migrate
-            pm2 reload apol-back || pm2 start npm --name apol-back -- run start
+             cd apol/back
+             npm install --legacy-peer-deps
+             npm run build
+             npm run migrate
+             pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
-            cd ../front
-            npm install --legacy-peer-deps
-            npm run build
-            pm2 reload apol-front || pm2 start npm --name apol-front -- run start
+             cd ../front
+             npm install --legacy-peer-deps
+             npm run build
+             pm2 reload apol-front || pm2 start npm --name apol-front -- run start
