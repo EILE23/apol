@@ -47,21 +47,31 @@ jobs:
           script: |
             cd /home/ubuntu
 
+            # 기존 uploads 백업
             cp -r apol/back/uploads /tmp/uploads_backup || true
+
+            # 기존 삭제 및 압축 해제
             rm -rf apol
             unzip -o apol.zip -d .
+
+            # 필수 디렉토리 생성
             mkdir -p apol/back/markdown
+
+            # uploads 복원
             cp -r /tmp/uploads_backup apol/back/uploads || true
 
+            # .env 설정
             echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
             echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
 
+            # 백엔드 설치 및 실행
             cd apol/back
             npm install --legacy-peer-deps
             npm run build
             npm run migrate
             pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
+            # 프론트 설치 및 실행
             cd ../front
             npm install --legacy-peer-deps
             npm run build
