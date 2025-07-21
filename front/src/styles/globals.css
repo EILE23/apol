@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+@import "tailwindcss/preflight"; /* base */
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 :root {
   --background: #fff;
   --foreground: #111;
@@ -11,11 +13,6 @@
   --muted: #6b7280;
   --gradient-start: #374151;
   --gradient-end: #1f2937;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
 }
 
 @media (prefers-color-scheme: dark) {
