@@ -18,9 +18,9 @@ export class ProjectModel {
     const start = Date.now();
 
     const { rows } = await pool.query(
-      `SELECT id, title, summary, tags, thumbnail, duration, created_at
-        FROM "apol_schema"."projects"
-        ORDER BY id DESC`
+      `SELECT id, "title", "summary", "tags", "thumbnail", "duration", "createdAt"
+       FROM "apol_schema"."projects"
+       ORDER BY id DESC`
     );
 
     console.log("쿼리 소요 시간:", Date.now() - start, "ms");
@@ -29,7 +29,7 @@ export class ProjectModel {
 
   static async getById(id: string): Promise<Project | null> {
     const { rows } = await pool.query(
-      'SELECT * FROM "apol_schema"."projects" WHERE id = $1',
+      `SELECT * FROM "apol_schema"."projects" WHERE id = $1`,
       [id]
     );
     return rows[0] || null;
@@ -40,12 +40,15 @@ export class ProjectModel {
   ): Promise<Project> {
     const { title, summary, tags, thumbnail, duration, contentPath } =
       projectData;
+
     const { rows } = await pool.query(
-      `INSERT INTO "apol_schema"."projects" (title, summary, tags, thumbnail, duration,contentpath)
+      `INSERT INTO "apol_schema"."projects" 
+       ("title", "summary", "tags", "thumbnail", "duration", "contentPath")
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
       [title, summary, tags, thumbnail, duration, contentPath]
     );
+
     return rows[0];
   }
 
@@ -53,28 +56,34 @@ export class ProjectModel {
     id: string,
     projectData: Partial<Omit<Project, "id" | "created_at">>
   ): Promise<Project | null> {
-    const fields = [];
-    const values = [];
+    const fields: string[] = [];
+    const values: any[] = [];
     let idx = 1;
+
     for (const key in projectData) {
-      fields.push(`${key} = $${idx}`);
+      // 쌍따옴표 포함된 camelCase로 컬럼명 처리
+      fields.push(`"${key}" = $${idx}`);
       values.push((projectData as any)[key]);
       idx++;
     }
+
     if (fields.length === 0) return this.getById(id);
+
     values.push(id);
     const { rows } = await pool.query(
-      `UPDATE "apol_schema"."projects" SET ${fields.join(
-        ", "
-      )}, updated_at = NOW() WHERE id = $${idx} RETURNING *`,
+      `UPDATE "apol_schema"."projects" 
+       SET ${fields.join(", ")}, "updatedAt" = NOW()
+       WHERE id = $${idx}
+       RETURNING *`,
       values
     );
+
     return rows[0] || null;
   }
 
   static async delete(id: string): Promise<boolean> {
     const result = await pool.query(
-      'DELETE FROM "apol_schema"."projects" WHERE id = $1',
+      `DELETE FROM "apol_schema"."projects" WHERE id = $1`,
       [id]
     );
     return (result.rowCount ?? 0) > 0;
