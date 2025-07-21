@@ -2,14 +2,15 @@ import { pool } from "../util/db";
 
 export interface Project {
   id: number;
-  title: string;
-  summary: string;
-  content: string;
-  tags: string[];
+  title?: string;
+  summary?: string;
+  content?: string;
+  tags?: string[];
   thumbnail?: string;
   duration?: string;
-  created_at: Date;
-  updated_at: Date;
+  contentPath?: string;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export class ProjectModel {
@@ -37,12 +38,13 @@ export class ProjectModel {
   static async create(
     projectData: Omit<Project, "id" | "created_at" | "updated_at">
   ): Promise<Project> {
-    const { title, summary, content, tags, thumbnail, duration } = projectData;
+    const { title, summary, tags, thumbnail, duration, contentPath } =
+      projectData;
     const { rows } = await pool.query(
-      `INSERT INTO "apol_schema"."projects" (title, summary, content, tags, thumbnail, duration)
+      `INSERT INTO "apol_schema"."projects" (title, summary, tags, thumbnail, duration,contentPath)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [title, summary, content, tags, thumbnail, duration]
+      [title, summary, tags, thumbnail, duration, contentPath]
     );
     return rows[0];
   }

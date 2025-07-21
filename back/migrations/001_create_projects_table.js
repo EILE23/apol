@@ -9,7 +9,7 @@ const up = (pgm) => {
       id: { type: "serial", primaryKey: true },
       title: { type: "varchar(255)", notNull: true },
       summary: { type: "text" },
-      content: { type: "text" },
+      contentPath: { type: "text" },
       tags: { type: "text[]" },
       thumbnail: { type: "varchar(255)" },
       duration: { type: "text" },
