@@ -41,7 +41,7 @@ export class ProjectModel {
     const { title, summary, tags, thumbnail, duration, contentPath } =
       projectData;
     const { rows } = await pool.query(
-      `INSERT INTO "apol_schema"."projects" (title, summary, tags, thumbnail, duration,contentPath)
+      `INSERT INTO "apol_schema"."projects" (title, summary, tags, thumbnail, duration,contentpath)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
       [title, summary, tags, thumbnail, duration, contentPath]
