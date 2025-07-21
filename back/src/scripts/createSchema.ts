@@ -6,7 +6,7 @@ async function createSchema() {
     await pool.query(`
       CREATE SCHEMA IF NOT EXISTS apol_schema;
     `);
-    console.log("✅ 스키마 생성 완료: apol_schema");
+    console.log(" 스키마 생성 완료: apol_schema");
 
     // 2. 테이블 생성
     await pool.query(`
