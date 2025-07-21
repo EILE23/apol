@@ -1,35 +1,49 @@
-- name: SSH and Deploy
-  uses: appleboy/ssh-action@v1.0.0
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ubuntu
-    key: ${{ secrets.EC2_KEY }}
-    script: |
-      cd /home/ubuntu
+name: Deploy APOL
 
-      #  uploads 백업
-      cp -r apol/back/uploads /tmp/uploads_backup || true
+on:
+  push:
+    branches: [main]
 
-      # 기존 삭제 및 압축 해제
-      rm -rf apol
-      unzip -o apol.zip
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-      #  uploads 복원
-      cp -r /tmp/uploads_backup apol/back/uploads || true
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      # .env 파일 삽입
-      echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
-      echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu
 
-      # 백엔드 빌드 + 실행
-      cd apol/back
-      npm install
-      npm run build
-      npm run migrate
-      pm2 reload apol-back || pm2 start npm --name apol-back -- run start
+            # uploads 백업
+            cp -r apol/back/uploads /tmp/uploads_backup || true
 
-      # 프론트 빌드 + 실행
-      cd ../front
-      npm install --legacy-peer-deps
-      npm run build
-      pm2 reload apol-front || pm2 start npm --name apol-front -- run start
+            # 기존 삭제 및 압축 해제
+            rm -rf apol
+            unzip -o apol.zip
+
+            # uploads 복원
+            cp -r /tmp/uploads_backup apol/back/uploads || true
+
+            # .env 파일 삽입
+            echo "${{ secrets.EC2_ENV_BACKEND }}" > apol/back/.env
+            echo "${{ secrets.EC2_ENV_FRONTEND }}" > apol/front/.env
+
+            # 백엔드 빌드 + 실행
+            cd apol/back
+            npm install
+            npm run build
+            npm run migrate
+            pm2 reload apol-back || pm2 start npm --name apol-back -- run start
+
+            # 프론트 빌드 + 실행
+            cd ../front
+            npm install --legacy-peer-deps
+            npm run build
+            pm2 reload apol-front || pm2 start npm --name apol-front -- run start
