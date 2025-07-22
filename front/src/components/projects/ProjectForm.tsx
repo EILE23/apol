@@ -52,7 +52,7 @@ export default function ProjectForm({
   const handleRegister = async () => {
     setFormError("");
     const editorInstance = toastEditorRef.current?.getInstance?.();
-    const markdown = editorInstance?.getHTML() ?? "";
+    const markdown = editorInstance?.getMarkdown() ?? "";
 
     if (!title.trim() || !isContentValid(markdown)) {
       setFormError("제목과 내용은 필수입니다.");
