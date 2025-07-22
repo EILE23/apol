@@ -77,9 +77,10 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
 
       {/* 마크다운 본문 */}
       {post.content && (
-        <section className="max-w-none text-base space-y-6 p-6 rounded-xl">
-          <ToastViewer markdown={post.content} />
-        </section>
+        <section
+          className="max-w-none text-base space-y-6 p-6 rounded-xl"
+          dangerouslySetInnerHTML={{ __html: post.content || "" }}
+        />
       )}
 
       {/* 프로젝트 기본 정보 */}
