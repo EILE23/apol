@@ -62,12 +62,8 @@ export class ProjectController {
       const filename = `project-${newProject.id}.md`;
       const filePath = path.join(MARKDOWN_DIR, filename);
       const markdownContent = turndownService.turndown(content);
-      const markdown = markdownContent
-        .replace(/([^\n])\n([^\n])/g, "$1\n\n$2")
-        .replace(/\n\s*-\s/g, "\n\n- ")
-        .replace(/(#+ .+)\n/g, "\n$1\n")
-        .trim();
-      await fs.writeFile(filePath, markdown, "utf-8");
+
+      await fs.writeFile(filePath, markdownContent, "utf-8");
 
       // 3. 다시 contentPath 업데이트
       const updatedProject = await ProjectModel.update(
@@ -98,12 +94,7 @@ export class ProjectController {
         const filePath = path.join(MARKDOWN_DIR, project.contentPath);
         const markdownContent = turndownService.turndown(content);
 
-        const markdown = markdownContent
-          .replace(/([^\n])\n([^\n])/g, "$1\n\n$2")
-          .replace(/\n\s*-\s/g, "\n\n- ")
-          .replace(/(#+ .+)\n/g, "\n$1\n")
-          .trim();
-        await fs.writeFile(filePath, markdown, "utf-8");
+        await fs.writeFile(filePath, markdownContent, "utf-8");
       }
 
       const updatedProject = await ProjectModel.update(id, {
