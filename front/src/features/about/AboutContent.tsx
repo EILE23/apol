@@ -49,7 +49,7 @@ export default function AboutContent() {
           </h2>
           <div className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 mt-6">
             다양한 경험을 거쳐 개발에 집중하게 되었습니다. 현재는 백엔드 중심의
-            사이드 프로젝트를 진행하며 실무 역량을 키워가고 있습니다.
+            사이드 프로젝트를 진행하며 실무 역량을 키워가고 있습니다
           </div>
           <div className="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed pb-24">
             <p>
