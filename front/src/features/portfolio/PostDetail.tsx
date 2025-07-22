@@ -1,9 +1,11 @@
-import DOMPurify from "dompurify";
-import { marked } from "marked";
+import dynamic from "next/dynamic";
 import Badge from "../../components/ui/Badge";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+const ToastViewer = dynamic(() => import("@/components/viewer/index"), {
+  ssr: false,
+});
 export interface PostDetailData {
   id: string | number;
   title: string;
@@ -24,9 +26,6 @@ export interface PostDetailData {
 }
 
 export default function PostDetail({ post }: { post: PostDetailData }) {
-  const rawHtml = post.content ? (marked.parse(post.content) as string) : "";
-  const safeHtml = DOMPurify.sanitize(rawHtml);
-
   return (
     <main className="pt-20 px-1 sm:px-3 md:px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
       {/* 제목 */}
@@ -77,9 +76,9 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
       )}
 
       {/* 마크다운 본문 */}
-      {safeHtml && (
-        <section className="prose prose-invert max-w-none text-base space-y-6 p-6 rounded-xl">
-          <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
+      {post.content && (
+        <section className="max-w-none text-base space-y-6 p-6 rounded-xl">
+          <ToastViewer markdown={post.content} />
         </section>
       )}
 
