@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
-import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
 import { Editor } from "@toast-ui/react-editor";
+import { useRef, useState } from "react";
 
 export interface ProjectFormProps {
   initial?: {
@@ -52,9 +52,9 @@ export default function ProjectForm({
   const handleRegister = async () => {
     setFormError("");
     const editorInstance = toastEditorRef.current?.getInstance?.();
-    const html = editorInstance?.getHTML?.() ?? "";
+    const markdown = editorInstance?.getMarkdown?.() ?? "";
 
-    if (!title.trim() || !isContentValid(html)) {
+    if (!title.trim() || !isContentValid(markdown)) {
       setFormError("제목과 내용은 필수입니다.");
       return;
     }
@@ -65,7 +65,7 @@ export default function ProjectForm({
         summary,
         tags,
         thumbnail,
-        content: html,
+        content: markdown,
         duration,
       });
     } catch {
