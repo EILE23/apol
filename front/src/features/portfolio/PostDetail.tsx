@@ -102,7 +102,7 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
             <strong className="text-neutral-200">담당 역할:</strong> {post.role}
           </p>
         )}
-        {post.technologies?.length > 0 && (
+        {Array.isArray(post.technologies) && post.technologies.length > 0 && (
           <p>
             <strong className="text-neutral-200">사용 기술:</strong>{" "}
             {post.technologies.join(", ")}
