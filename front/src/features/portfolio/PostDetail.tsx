@@ -24,7 +24,7 @@ export interface PostDetailData {
 }
 
 export default function PostDetail({ post }: { post: PostDetailData }) {
-  const rawHtml = post.content ? marked.parse(post.content) : "";
+  const rawHtml = post.content ? (marked.parse(post.content) as string) : "";
   const safeHtml = DOMPurify.sanitize(rawHtml);
 
   return (
