@@ -77,10 +77,9 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
 
       {/* 마크다운 본문 */}
       {post.content && (
-        <section
-          className="prose prose-invert max-w-none p-6 rounded-xl"
-          dangerouslySetInnerHTML={{ __html: post.content || "" }}
-        />
+        <section className="max-w-none p-6 rounded-xl">
+          <ToastViewer markdown={post.content} />
+        </section>
       )}
 
       {/* 프로젝트 기본 정보 */}
