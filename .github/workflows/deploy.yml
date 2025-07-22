@@ -23,10 +23,15 @@ jobs:
 
             echo "[⚙️] Backend build & reload"
             cd back
+
+            echo "[⚙️] Write backend .env"
+            echo "${{ secrets.EC2_ENV_BACKEND }}" > ~/apol/back/.env
             npm run build
             pm2 reload apol-back || pm2 start npm --name apol-back -- run start
 
             echo "[⚙️] Frontend build & reload"
             cd ../front
+
+            echo "${{ secrets.EC2_ENV_FRONTEND }}" > ~/apol/front/.env
             npm run build
             pm2 reload apol-front || pm2 start npm --name apol-front -- run start
