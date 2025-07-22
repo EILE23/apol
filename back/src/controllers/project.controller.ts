@@ -63,7 +63,7 @@ export class ProjectController {
       const filePath = path.join(MARKDOWN_DIR, filename);
       const markdownContent = turndownService.turndown(content);
 
-      await fs.writeFile(filePath, markdownContent, "utf-8");
+      await fs.writeFile(filePath, content, "utf-8");
 
       // 3. 다시 contentPath 업데이트
       const updatedProject = await ProjectModel.update(
@@ -94,7 +94,7 @@ export class ProjectController {
         const filePath = path.join(MARKDOWN_DIR, project.contentPath);
         const markdownContent = turndownService.turndown(content);
 
-        await fs.writeFile(filePath, markdownContent, "utf-8");
+        await fs.writeFile(filePath, content, "utf-8");
       }
 
       const updatedProject = await ProjectModel.update(id, {
