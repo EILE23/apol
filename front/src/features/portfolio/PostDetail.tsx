@@ -1,5 +1,7 @@
-import MarkdownIt from "markdown-it";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
 import Badge from "../../components/ui/Badge";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export interface PostDetailData {
@@ -18,14 +20,12 @@ export interface PostDetailData {
   github?: string;
   liveDemo?: string;
   screenshots?: string[];
-  content?: string; // 마크다운 본문
+  content?: string;
 }
 
-const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
-
 export default function PostDetail({ post }: { post: PostDetailData }) {
-  // 마크다운 본문 렌더링
-  const htmlContent = post.content ? md.render(post.content) : "";
+  const rawHtml = post.content ? marked.parse(post.content) : "";
+  const safeHtml = DOMPurify.sanitize(rawHtml);
 
   return (
     <main className="pt-20 px-1 sm:px-3 md:px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
@@ -61,6 +61,7 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
           </p>
         )}
       </header>
+
       {post.image && (
         <div className="mb-12">
           <img
@@ -74,12 +75,14 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
           />
         </div>
       )}
+
       {/* 마크다운 본문 */}
-      {htmlContent && (
+      {safeHtml && (
         <section className="prose prose-invert max-w-none text-base space-y-6 p-6 rounded-xl">
-          <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+          <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
         </section>
       )}
+
       {/* 프로젝트 기본 정보 */}
       <section className="mb-12 space-y-2 text-sm leading-relaxed text-neutral-400 mt-12">
         {post.duration && (
@@ -99,14 +102,14 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
             <strong className="text-neutral-200">담당 역할:</strong> {post.role}
           </p>
         )}
-        {post.technologies && post.technologies.length > 0 && (
+        {post.technologies?.length > 0 && (
           <p>
             <strong className="text-neutral-200">사용 기술:</strong>{" "}
             {post.technologies.join(", ")}
           </p>
         )}
       </section>
-      {/* 링크 버튼 */}
+
       {(post.github || post.liveDemo) && (
         <div className="flex gap-4 mt-6">
           {post.github && (
