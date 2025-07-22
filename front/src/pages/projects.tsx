@@ -55,7 +55,7 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col">
       <Header type="projects" />
-      <main className="pt-20 flex-1">
+      <main className="pt-20 flex-1 pb-10">
         {/* Hero Section */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
