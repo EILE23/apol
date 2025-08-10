@@ -115,6 +115,7 @@ export default function ProjectEditPage() {
                   summary: data.summary.trim(),
                   content: data.content,
                   tags: data.tags,
+                  category: data.category as CategoryType,
                   thumbnail: thumbnailUrl,
                 };
                 await projectApi.update(id as string, projectData);
