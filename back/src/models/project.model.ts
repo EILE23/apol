@@ -11,6 +11,7 @@ export interface Project {
   contentPath?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  category?: string;
 }
 
 export class ProjectModel {
@@ -18,9 +19,9 @@ export class ProjectModel {
     const start = Date.now();
 
     const { rows } = await pool.query(
-      `SELECT id, "title", "summary", "tags", "thumbnail", "duration", "createdAt"
-       FROM "apol_schema"."projects"
-       ORDER BY id DESC`
+      `SELECT id, "title", "summary", "tags", "thumbnail", "duration", "category", "createdAt"
+     FROM "apol_schema"."projects"
+     ORDER BY id DESC`
     );
 
     console.log("쿼리 소요 시간:", Date.now() - start, "ms");
@@ -38,15 +39,15 @@ export class ProjectModel {
   static async create(
     projectData: Omit<Project, "id" | "created_at" | "updated_at">
   ): Promise<Project> {
-    const { title, summary, tags, thumbnail, duration, contentPath } =
+    const { title, summary, tags, thumbnail, duration, contentPath, category } =
       projectData;
 
     const { rows } = await pool.query(
       `INSERT INTO "apol_schema"."projects" 
-       ("title", "summary", "tags", "thumbnail", "duration", "contentPath")
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [title, summary, tags, thumbnail, duration, contentPath]
+     ("title", "summary", "tags", "thumbnail", "duration", "contentPath", "category")
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING *`,
+      [title, summary, tags, thumbnail, duration, contentPath, category]
     );
 
     return rows[0];

@@ -1,11 +1,29 @@
 import dynamic from "next/dynamic";
 import Badge from "../../components/ui/Badge";
+import { CategoryType } from "@/types/categorys"; // ← 경로 맞춰
+// 필요하면 라벨 맵도 가져오거나 여기서 정의
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 const ToastViewer = dynamic(() => import("@/components/viewer/index"), {
   ssr: false,
 });
+
+const categoryLabel: Record<CategoryType, string> = {
+  project: "프로젝트",
+  study: "개인 공부",
+  record: "기록",
+};
+
+const categoryVariant: Record<CategoryType, "blue" | "purple" | "default"> = {
+  project: "blue",
+  study: "purple",
+  record: "default",
+};
+
+const isCategory = (v: any): v is CategoryType =>
+  v === "project" || v === "study" || v === "record";
+
 export interface PostDetailData {
   id: string | number;
   title: string;
@@ -13,7 +31,7 @@ export interface PostDetailData {
   fullDescription?: string;
   image?: string;
   technologies?: string[];
-  category?: string;
+  category?: CategoryType; // ✅ 타입 강화
   date?: string;
   status?: string;
   duration?: string;
@@ -26,15 +44,19 @@ export interface PostDetailData {
 }
 
 export default function PostDetail({ post }: { post: PostDetailData }) {
+  const hasValidCategory = isCategory(post.category);
+
   return (
     <main className="pt-20 px-1 sm:px-3 md:px-4 max-w-3xl mx-auto text-neutral-100 min-h-screen">
       {/* 제목 */}
       <header className="mb-10">
-        {post.category && (
+        {(hasValidCategory || post.status) && (
           <div className="mb-2">
-            <Badge variant="blue" size="sm">
-              {post.category}
-            </Badge>
+            {hasValidCategory && (
+              <Badge variant={categoryVariant[post.category!]} size="sm">
+                {categoryLabel[post.category!]}
+              </Badge>
+            )}
             {post.status && (
               <Badge
                 variant={post.status === "완료" ? "green" : "yellow"}
@@ -46,10 +68,13 @@ export default function PostDetail({ post }: { post: PostDetailData }) {
             )}
           </div>
         )}
+
         <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
+
         {post.description && (
           <p className="text-lg text-neutral-400">{post.description}</p>
         )}
+
         {post.date && (
           <p className="text-sm text-neutral-500 mt-1">
             {new Date(post.date as string).toLocaleDateString("ko-KR", {

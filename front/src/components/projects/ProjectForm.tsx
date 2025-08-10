@@ -2,7 +2,7 @@ import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { Editor } from "@toast-ui/react-editor";
 import { useRef, useState } from "react";
-
+import { categories, CategoryType } from "@/types/categorys";
 export interface ProjectFormProps {
   initial?: {
     title?: string;
@@ -11,6 +11,7 @@ export interface ProjectFormProps {
     thumbnail?: string;
     content?: string;
     duration?: string;
+    category?: CategoryType;
   };
   onSubmit: (data: {
     title: string;
@@ -19,6 +20,7 @@ export interface ProjectFormProps {
     thumbnail?: File | null;
     content: string;
     duration?: string;
+    category: CategoryType;
   }) => void;
   isEdit?: boolean;
   loading?: boolean;
@@ -42,6 +44,13 @@ export default function ProjectForm({
   const [duration, setDuration] = useState(initial?.duration || "");
   const [formError, setFormError] = useState<string>("");
 
+  const isCategory = (v: any): v is CategoryType =>
+    v === "project" || v === "study" || v === "record";
+
+  const [category, setCategory] = useState<CategoryType>(
+    isCategory(initial?.category) ? initial!.category! : "project"
+  );
+
   const toastEditorRef = useRef<Editor>(null);
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -59,6 +68,11 @@ export default function ProjectForm({
       return;
     }
 
+    if (!isCategory(category)) {
+      setFormError("카테고리를 선택하세요.");
+      return;
+    }
+
     try {
       await onSubmit({
         title,
@@ -67,6 +81,7 @@ export default function ProjectForm({
         thumbnail,
         content: markdown,
         duration,
+        category, //
       });
     } catch {
       setFormError("등록 중 오류가 발생했습니다.");
@@ -112,7 +127,22 @@ export default function ProjectForm({
           placeholder="이 프로젝트를 한 줄로 소개해 주세요."
         />
       </div>
-
+      <div>
+        <label className="block text-lg text-gray-200 font-semibold mb-2">
+          카테고리
+        </label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value as CategoryType)}
+          className="w-full px-4 py-2 bg-[#18181b] border border-gray-700 rounded-md text-base"
+        >
+          {categories.map((c) => (
+            <option key={c.key} value={c.key}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      </div>
       <div>
         <label className="block text-lg text-gray-200 font-semibold mb-2">
           본문
