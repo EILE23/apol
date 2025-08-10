@@ -1,5 +1,6 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+import { CategoryType } from "@/types/categorys";
 // 프로젝트 타입 정의
 export interface Project {
   id: string;
@@ -9,6 +10,7 @@ export interface Project {
   tags: string[];
   thumbnail?: string;
   duration?: string;
+  category?: CategoryType;
   createdAt: string;
   updatedAt: string;
 }
@@ -20,6 +22,7 @@ export interface CreateProjectData {
   tags: string[];
   thumbnail?: string;
   duration?: string;
+  category?: CategoryType;
 }
 
 export interface UpdateProjectData {
@@ -29,6 +32,7 @@ export interface UpdateProjectData {
   tags?: string[];
   thumbnail?: string;
   duration?: string;
+  category?: CategoryType;
 }
 
 // 공통 API 요청 함수

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { projectApi, Project, UpdateProjectData } from "../../../util/api";
 import { isAdminLoggedIn } from "../../../util/auth";
 import dynamic from "next/dynamic";
+import { CategoryType } from "@/types/categorys";
 
 const ProjectForm = dynamic(
   () => import("../../../components/projects/ProjectForm"),
@@ -10,6 +11,7 @@ const ProjectForm = dynamic(
     ssr: false,
   }
 );
+
 export default function ProjectEditPage() {
   const router = useRouter();
   const { id } = router.query;
@@ -92,6 +94,8 @@ export default function ProjectEditPage() {
               tags: project.tags,
               thumbnail: project.thumbnail,
               content: content,
+              duration: project.duration || "",
+              category: (project.category as CategoryType) || "project",
             }}
             onSubmit={async (data) => {
               setIsSubmitting(true);
