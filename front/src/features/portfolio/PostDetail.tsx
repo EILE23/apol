@@ -31,7 +31,7 @@ export interface PostDetailData {
   fullDescription?: string;
   image?: string;
   technologies?: string[];
-  category?: CategoryType; // ✅ 타입 강화
+  category?: CategoryType;
   date?: string;
   status?: string;
   duration?: string;
