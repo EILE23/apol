@@ -43,11 +43,17 @@ export default function PortfolioProjects() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch">
-          {projects.slice(0, 3).map((project) => (
-            <div key={project.id} className="flex-1 min-w-[320px] max-w-md">
-              <ProjectCard project={project} type="main" />
-            </div>
-          ))}
+          {projects
+            .filter(
+              (project) =>
+                project.category !== "record" && project.category !== "study"
+            )
+            .slice(0, 3)
+            .map((project) => (
+              <div key={project.id} className="flex-1 min-w-[320px] max-w-md">
+                <ProjectCard project={project} type="main" />
+              </div>
+            ))}
         </div>
 
         {/* View All Projects Button */}

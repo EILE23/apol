@@ -155,9 +155,11 @@ export default function AboutContent() {
           ) : error ? (
             <p className="text-red-400">{error}</p>
           ) : projects && projects.length > 0 ? (
-            projects.map((project: Project) => (
-              <ProjectCard key={project.id} project={project} type="about" />
-            ))
+            projects
+              .filter((project) => project.category !== "record")
+              .map((project: Project) => (
+                <ProjectCard key={project.id} project={project} type="about" />
+              ))
           ) : (
             <p className="text-gray-400">표시할 프로젝트가 없습니다.</p>
           )}
