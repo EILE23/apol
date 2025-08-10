@@ -43,7 +43,8 @@ export class ProjectController {
   // 새 프로젝트 생성
   static async createProject(req: Request, res: Response) {
     try {
-      const { title, summary, content, tags, thumbnail, duration } = req.body;
+      const { title, summary, content, tags, thumbnail, duration, category } =
+        req.body;
 
       if (!title || !content) {
         return res.status(400).json({ error: "제목과 내용은 필수입니다." });
@@ -55,6 +56,7 @@ export class ProjectController {
         tags: tags ?? [],
         thumbnail,
         duration,
+        category,
         contentPath: "", // 일단 빈 값
       });
 
@@ -83,7 +85,8 @@ export class ProjectController {
   static async updateProject(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { title, summary, content, tags, thumbnail, duration } = req.body;
+      const { title, summary, content, tags, thumbnail, duration, category } =
+        req.body;
 
       const project = await ProjectModel.getById(id);
       if (!project) {
@@ -103,6 +106,7 @@ export class ProjectController {
         tags,
         thumbnail,
         duration,
+        category,
       });
 
       res.json(updatedProject);
